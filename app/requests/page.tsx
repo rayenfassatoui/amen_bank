@@ -2,12 +2,14 @@
 
 import { useEffect, useState } from "react"
 import { useSession } from "next-auth/react"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { toast } from "sonner"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Skeleton } from "@/components/ui/skeleton"
+import { Pagination } from "@/components/ui/pagination"
+import { RequestFilters } from "@/components/requests/request-filters"
 import { REQUEST_STATUSES } from "@/lib/constants/denominations"
 
 interface Request {
@@ -35,22 +37,31 @@ interface Request {
 export default function RequestsPage() {
   const { data: session } = useSession()
   const router = useRouter()
+  const searchParams = useSearchParams()
   const [requests, setRequests] = useState<Request[]>([])
+  const [pagination, setPagination] = useState({
+    page: 1,
+    limit: 10,
+    total: 0,
+    totalPages: 0,
+    hasMore: false,
+  })
   const [isLoading, setIsLoading] = useState(true)
-  const [searchQuery, setSearchQuery] = useState("")
-  const [statusFilter, setStatusFilter] = useState<string>("ALL")
 
   useEffect(() => {
     fetchRequests()
-  }, [])
+  }, [searchParams])
 
   const fetchRequests = async () => {
+    setIsLoading(true)
     try {
-      const response = await fetch("/api/requests")
+      const params = new URLSearchParams(searchParams.toString())
+      const response = await fetch(`/api/requests?${params.toString()}`)
       const result = await response.json()
 
       if (response.ok) {
         setRequests(result.data)
+        setPagination(result.pagination)
       } else {
         toast.error(result.message || "Failed to fetch requests")
       }
@@ -81,23 +92,11 @@ export default function RequestsPage() {
     )
   }
 
-  const filteredRequests = requests.filter(request => {
-    const matchesSearch =
-      request.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      request.agency.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      request.agency.code.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      request.user.firstName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      request.user.lastName.toLowerCase().includes(searchQuery.toLowerCase())
-
-    const matchesStatus = statusFilter === "ALL" || request.status === statusFilter
-
-    return matchesSearch && matchesStatus
-  })
-
   if (isLoading) {
     return (
-      <div className="container mx-auto py-8 px-4">
-        <p>Loading...</p>
+      <div className="container mx-auto py-8 px-4 max-w-7xl">
+        <h1 className="text-3xl font-bold mb-8">Fund Requests</h1>
+        <Skeleton className="h-[600px]" />
       </div>
     )
   }
@@ -105,7 +104,7 @@ export default function RequestsPage() {
   const canCreateRequest = session?.user?.role === "Agency"
 
   return (
-    <div className="container mx-auto py-8 px-4">
+    <div className="container mx-auto py-8 px-4 max-w-7xl">
       <div className="mb-8 flex justify-between items-start">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">Fund Requests</h1>
@@ -118,37 +117,16 @@ export default function RequestsPage() {
         )}
       </div>
 
+      <RequestFilters onFilterChange={fetchRequests} />
+
       <Card className="p-6">
-        <div className="mb-6 flex flex-col md:flex-row gap-4">
-          <div className="flex-1">
-            <Input
-              placeholder="Search by ID, agency, or user..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-          </div>
-          <div className="flex gap-2 flex-wrap">
-            <Button
-              variant={statusFilter === "ALL" ? "default" : "outline"}
-              size="sm"
-              onClick={() => setStatusFilter("ALL")}
-            >
-              All
-            </Button>
-            {REQUEST_STATUSES.map(status => (
-              <Button
-                key={status.value}
-                variant={statusFilter === status.value ? "default" : "outline"}
-                size="sm"
-                onClick={() => setStatusFilter(status.value)}
-              >
-                {status.label}
-              </Button>
-            ))}
-          </div>
+        <div className="mb-4">
+          <p className="text-sm text-gray-600">
+            Showing {requests.length} of {pagination.total} requests
+          </p>
         </div>
 
-        {filteredRequests.length === 0 ? (
+        {requests.length === 0 ? (
           <div className="text-center py-12 text-gray-500">
             <p>No requests found</p>
             {canCreateRequest && (
@@ -173,7 +151,7 @@ export default function RequestsPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredRequests.map((request) => (
+                {requests.map((request) => (
                   <TableRow key={request.id}>
                     <TableCell className="font-mono text-sm">{request.id.slice(0, 8)}...</TableCell>
                     <TableCell>
@@ -218,6 +196,12 @@ export default function RequestsPage() {
             </Table>
           </div>
         )}
+
+        <Pagination
+          currentPage={pagination.page}
+          totalPages={pagination.totalPages}
+          hasMore={pagination.hasMore}
+        />
       </Card>
     </div>
   )

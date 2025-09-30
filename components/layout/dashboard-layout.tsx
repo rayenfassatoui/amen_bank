@@ -13,6 +13,8 @@ import {
   Building2,
   Shield,
   TrendingUp,
+  BarChart3,
+  Activity,
 } from "lucide-react"
 
 interface DashboardLayoutProps {
@@ -36,16 +38,28 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
       roles: ["Administrator", "Agency", "Central Cash", "Tunisia Security"],
     },
     {
+      name: "Fund Requests",
+      href: "/requests",
+      icon: FileText,
+      roles: ["Agency", "Central Cash", "Tunisia Security", "Administrator"],
+    },
+    {
       name: "User Management",
       href: "/admin/users",
       icon: Users,
       roles: ["Administrator"],
     },
     {
-      name: "Fund Requests",
-      href: "/requests",
-      icon: FileText,
-      roles: ["Agency", "Central Cash", "Tunisia Security"],
+      name: "Analytics",
+      href: "/admin/analytics",
+      icon: BarChart3,
+      roles: ["Administrator"],
+    },
+    {
+      name: "Audit Logs",
+      href: "/admin/audit-logs",
+      icon: Activity,
+      roles: ["Administrator"],
     },
     {
       name: "Agencies",

@@ -14,9 +14,25 @@ export async function GET(request: Request) {
     }
 
     const { searchParams } = new URL(request.url)
+
+    // Pagination parameters
+    const page = parseInt(searchParams.get("page") || "1")
+    const limit = parseInt(searchParams.get("limit") || "10")
+    const skip = (page - 1) * limit
+
+    // Filter parameters
     const status = searchParams.get("status")
     const type = searchParams.get("type")
     const agencyId = searchParams.get("agencyId")
+    const search = searchParams.get("search")
+    const dateFrom = searchParams.get("dateFrom")
+    const dateTo = searchParams.get("dateTo")
+    const minAmount = searchParams.get("minAmount")
+    const maxAmount = searchParams.get("maxAmount")
+
+    // Sorting parameters
+    const sortBy = searchParams.get("sortBy") || "createdAt"
+    const sortOrder = searchParams.get("sortOrder") || "desc"
 
     // Build filter based on role
     const where: any = {}
@@ -49,6 +65,54 @@ export async function GET(request: Request) {
       where.agencyId = agencyId
     }
 
+    // Search filter (searches in agency name, code, user names)
+    if (search) {
+      where.OR = [
+        { agency: { name: { contains: search, mode: "insensitive" } } },
+        { agency: { code: { contains: search, mode: "insensitive" } } },
+        { user: { firstName: { contains: search, mode: "insensitive" } } },
+        { user: { lastName: { contains: search, mode: "insensitive" } } },
+      ]
+    }
+
+    // Date range filter
+    if (dateFrom || dateTo) {
+      where.createdAt = {}
+      if (dateFrom) {
+        where.createdAt.gte = new Date(dateFrom)
+      }
+      if (dateTo) {
+        where.createdAt.lte = new Date(dateTo)
+      }
+    }
+
+    // Amount range filter
+    if (minAmount || maxAmount) {
+      where.totalAmount = {}
+      if (minAmount) {
+        where.totalAmount.gte = parseFloat(minAmount)
+      }
+      if (maxAmount) {
+        where.totalAmount.lte = parseFloat(maxAmount)
+      }
+    }
+
+    // Build orderBy object
+    const orderBy: any = {}
+    if (sortBy === "totalAmount") {
+      orderBy.totalAmount = sortOrder
+    } else if (sortBy === "status") {
+      orderBy.status = sortOrder
+    } else if (sortBy === "agency") {
+      orderBy.agency = { name: sortOrder }
+    } else {
+      orderBy.createdAt = sortOrder
+    }
+
+    // Get total count for pagination
+    const total = await prisma.request.count({ where })
+
+    // Fetch requests with pagination
     const requests = await prisma.request.findMany({
       where,
       include: {
@@ -80,14 +144,25 @@ export async function GET(request: Request) {
           take: 10,
         },
       },
-      orderBy: {
-        createdAt: "desc",
-      },
+      orderBy,
+      skip,
+      take: limit,
     })
 
     return NextResponse.json({
       status: "success",
       data: requests,
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit),
+        hasMore: skip + limit < total,
+      },
+    }, {
+      headers: {
+        "Cache-Control": "private, max-age=60", // Cache for 60 seconds
+      },
     })
   } catch (error) {
     console.error("Error fetching requests:", error)

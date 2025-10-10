@@ -11,6 +11,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { Pagination } from "@/components/ui/pagination"
 import { RequestFilters } from "@/components/requests/request-filters"
 import { REQUEST_STATUSES } from "@/lib/constants/denominations"
+import { ArrowLeft } from "lucide-react"
 
 interface Request {
   id: string
@@ -105,10 +106,21 @@ export default function RequestsPage() {
 
   return (
     <div className="container mx-auto py-8 px-4 max-w-7xl">
+      <div className="mb-4">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => router.push("/dashboard")}
+          className="gap-2"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Back to Dashboard
+        </Button>
+      </div>
       <div className="mb-8 flex justify-between items-start">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Fund Requests</h1>
-          <p className="text-gray-600 mt-2">View and manage all fund transfer requests</p>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Fund Requests</h1>
+          <p className="text-gray-600 dark:text-gray-400 mt-2">View and manage all fund transfer requests</p>
         </div>
         {canCreateRequest && (
           <Button onClick={() => router.push("/requests/create")}>
@@ -121,7 +133,7 @@ export default function RequestsPage() {
 
       <Card className="p-6">
         <div className="mb-4">
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-gray-600 dark:text-gray-400">
             Showing {requests.length} of {pagination.total} requests
           </p>
         </div>

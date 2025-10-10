@@ -2,11 +2,14 @@
 
 import { useEffect, useState } from "react"
 import { useSession } from "next-auth/react"
+import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
 import { RequestStatsChart } from "@/components/dashboard/request-stats-chart"
 import { Skeleton } from "@/components/ui/skeleton"
 import { REQUEST_STATUSES } from "@/lib/constants/denominations"
+import { ArrowLeft } from "lucide-react"
 
 interface AnalyticsData {
   statusBreakdown: { name: string; value: number; color: string }[]
@@ -20,6 +23,7 @@ interface AnalyticsData {
 
 export default function AnalyticsPage() {
   const { data: session } = useSession()
+  const router = useRouter()
   const [analytics, setAnalytics] = useState<AnalyticsData | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
@@ -147,9 +151,20 @@ export default function AnalyticsPage() {
 
   return (
     <div className="container mx-auto py-8 px-4">
+      <div className="mb-4">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => router.push("/dashboard")}
+          className="gap-2"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Back to Dashboard
+        </Button>
+      </div>
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Analytics Dashboard</h1>
-        <p className="text-gray-600 mt-2">Comprehensive insights into fund management operations</p>
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Analytics Dashboard</h1>
+        <p className="text-gray-600 dark:text-gray-400 mt-2">Comprehensive insights into fund management operations</p>
       </div>
 
       {/* Summary Cards */}

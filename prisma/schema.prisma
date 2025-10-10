@@ -60,9 +60,10 @@ model User {
   agencyId String
 
   // Relations
-  role     Role     @relation(fields: [roleId], references: [id])
-  agency   Agency   @relation(fields: [agencyId], references: [id])
-  requests Request[]
+  role       Role        @relation(fields: [roleId], references: [id])
+  agency     Agency      @relation(fields: [agencyId], references: [id])
+  requests   Request[]
+  actionLogs ActionLog[]
 
   @@map("users")
 }
@@ -129,6 +130,7 @@ model ActionLog {
   requestId   String?
 
   // Relations
+  user        User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
   request     Request? @relation(fields: [requestId], references: [id], onDelete: SetNull)
 
   @@map("action_logs")

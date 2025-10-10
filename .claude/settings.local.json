@@ -9,7 +9,8 @@
       "Bash(curl:*)",
       "Bash(npx prisma db seed:*)",
       "Bash(npx prisma db push:*)",
-      "Bash(npx tsx:*)"
+      "Bash(npx tsx:*)",
+      "Read(//c/**)"
     ],
     "deny": [],
     "ask": []

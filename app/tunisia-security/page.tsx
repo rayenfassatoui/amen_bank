@@ -5,18 +5,20 @@ import { useSession } from "next-auth/react"
 import { toast } from "sonner"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { REQUEST_STATUSES } from "@/lib/constants/denominations"
+import { AssignTeamDialog } from "@/components/assign-team-dialog"
 
 interface Request {
   id: string
   requestType: string
   status: string
   totalAmount: number
-  teamAssigned: string | null
+  securityTeam?: {
+    teamName: string
+    cinChauffeur: string
+    cinTransporteur: string
+  } | null
   createdAt: string
   agency: {
     id: string
@@ -35,10 +37,8 @@ export default function TunisiaSecurityPage() {
   const { data: session } = useSession()
   const [requests, setRequests] = useState<Request[]>([])
   const [isLoading, setIsLoading] = useState(true)
-  const [selectedRequest, setSelectedRequest] = useState<Request | null>(null)
+  const [selectedRequestId, setSelectedRequestId] = useState<string | null>(null)
   const [assignDialogOpen, setAssignDialogOpen] = useState(false)
-  const [dispatchDialogOpen, setDispatchDialogOpen] = useState(false)
-  const [teamName, setTeamName] = useState("")
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   useEffect(() => {
@@ -63,46 +63,21 @@ export default function TunisiaSecurityPage() {
     }
   }
 
-  const handleAssignSubmit = async () => {
-    if (!selectedRequest || !teamName.trim()) {
-      toast.error("Please provide a team name")
-      return
-    }
-
-    setIsSubmitting(true)
-    try {
-      const response = await fetch(`/api/requests/${selectedRequest.id}/assign`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ teamAssigned: teamName })
-      })
-
-      const result = await response.json()
-
-      if (!response.ok) {
-        throw new Error(result.message || "Failed to assign team")
-      }
-
-      toast.success("Team assigned successfully!")
-      setAssignDialogOpen(false)
-      setSelectedRequest(null)
-      setTeamName("")
-      fetchRequests()
-    } catch (error) {
-      console.error("Error assigning team:", error)
-      toast.error(error instanceof Error ? error.message : "Failed to assign team")
-    } finally {
-      setIsSubmitting(false)
-    }
+  const handleAssignSuccess = () => {
+    fetchRequests()
   }
 
   const handleDispatch = async (requestId: string) => {
     setIsSubmitting(true)
     try {
       const response = await fetch(`/api/requests/${requestId}/dispatch`, {
-        method: "PATCH"
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          dispatchedBy: session?.user?.name || session?.user?.email || "Tunisia Security"
+        })
       })
 
       const result = await response.json()
@@ -140,9 +115,22 @@ export default function TunisiaSecurityPage() {
 
   return (
     <div className="container mx-auto py-8 px-4">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Tunisia Security Dashboard</h1>
-        <p className="text-gray-600 mt-2">Assign teams and dispatch validated requests</p>
+      <div className="mb-8 flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900">Tunisia Security Dashboard</h1>
+          <p className="text-gray-600 mt-2">Assign teams and dispatch validated requests</p>
+        </div>
+        <Button 
+          onClick={() => window.location.href = '/dashboard'}
+          variant="outline"
+          className="flex items-center gap-2"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="m12 19-7-7 7-7"/>
+            <path d="M19 12H5"/>
+          </svg>
+          Back to Dashboard
+        </Button>
       </div>
 
       {/* Validated Requests - Need Assignment */}
@@ -189,7 +177,7 @@ export default function TunisiaSecurityPage() {
                     <Button
                       size="sm"
                       onClick={() => {
-                        setSelectedRequest(request)
+                        setSelectedRequestId(request.id)
                         setAssignDialogOpen(true)
                       }}
                       disabled={isSubmitting}
@@ -244,7 +232,15 @@ export default function TunisiaSecurityPage() {
                   <TableCell>{request.requestType}</TableCell>
                   <TableCell className="font-semibold">{Number(request.totalAmount).toFixed(3)}</TableCell>
                   <TableCell>
-                    <span className="font-medium text-[rgb(var(--amen-green))]">{request.teamAssigned}</span>
+                    {request.securityTeam ? (
+                      <div>
+                        <p className="font-medium text-[rgb(var(--amen-green))]">{request.securityTeam.teamName}</p>
+                        <p className="text-xs text-gray-500">Chauffeur: {request.securityTeam.cinChauffeur}</p>
+                        <p className="text-xs text-gray-500">Transporteur: {request.securityTeam.cinTransporteur}</p>
+                      </div>
+                    ) : (
+                      <span className="text-gray-400">-</span>
+                    )}
                   </TableCell>
                   <TableCell>{new Date(request.createdAt).toLocaleDateString()}</TableCell>
                   <TableCell>{getStatusBadge(request.status)}</TableCell>
@@ -264,45 +260,14 @@ export default function TunisiaSecurityPage() {
         )}
       </Card>
 
-      <Dialog open={assignDialogOpen} onOpenChange={setAssignDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Assign Security Team</DialogTitle>
-            <DialogDescription>
-              Assign a security team to handle this fund transfer request.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="teamName">Team Name *</Label>
-              <Input
-                id="teamName"
-                placeholder="e.g., Team Alpha, Team Bravo"
-                value={teamName}
-                onChange={(e) => setTeamName(e.target.value)}
-              />
-            </div>
-            <div className="flex justify-end gap-2">
-              <Button
-                variant="outline"
-                onClick={() => {
-                  setAssignDialogOpen(false)
-                  setTeamName("")
-                  setSelectedRequest(null)
-                }}
-              >
-                Cancel
-              </Button>
-              <Button
-                onClick={handleAssignSubmit}
-                disabled={isSubmitting || !teamName.trim()}
-              >
-                {isSubmitting ? "Assigning..." : "Assign Team"}
-              </Button>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
+      {selectedRequestId && (
+        <AssignTeamDialog
+          open={assignDialogOpen}
+          onOpenChange={setAssignDialogOpen}
+          requestId={selectedRequestId}
+          onSuccess={handleAssignSuccess}
+        />
+      )}
     </div>
   )
 }

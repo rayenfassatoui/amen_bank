@@ -75,7 +75,6 @@ model Request {
   totalAmount      Decimal
   currency         String        @default("TND")
   description      String?
-  teamAssigned     String?
   dispatchedBy     String?
   dispatchedAt     DateTime?
   receivedBy       String?
@@ -88,14 +87,32 @@ model Request {
   // Foreign Keys
   userId           String
   agencyId         String
+  securityTeamId   String?
 
   // Relations
   user             User                @relation(fields: [userId], references: [id])
   agency           Agency              @relation(fields: [agencyId], references: [id])
+  securityTeam     SecurityTeam?       @relation(fields: [securityTeamId], references: [id])
   denominationDetails DenominationDetail[]
   actionLogs       ActionLog[]
 
   @@map("requests")
+}
+
+model SecurityTeam {
+  id              String   @id @default(cuid())
+  teamName        String
+  cinChauffeur    String   // CIN of the driver
+  cinTransporteur String   // CIN of the transporter
+  assignedBy      String?  // User who assigned the team
+  assignedAt      DateTime @default(now())
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  // Relations
+  requests        Request[]
+
+  @@map("security_teams")
 }
 
 model DenominationDetail {

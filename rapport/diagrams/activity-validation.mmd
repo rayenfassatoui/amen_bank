@@ -1,0 +1,25 @@
+flowchart TD
+    Start([Demande SUBMITTED])
+    Examine[CC examine demande]
+    Decision{Valider ou<br/>Rejeter?}
+    Validate[UPDATE status = VALIDATED]
+    InputReason[Saisir motif rejet]
+    Reject[UPDATE status = REJECTED]
+    LogValidate[INSERT ActionLog VALIDATED]
+    LogReject[INSERT ActionLog REJECTED]
+    NotifyTS[Notifier Tunisie Sécurité]
+    NotifyAgence[Notifier Agence]
+    ReadyAssign[Prêt pour assignment]
+    EndCycle([Fin cycle - peut resubmit])
+    
+    Start --> Examine
+    Examine --> Decision
+    Decision -->|VALIDER| Validate
+    Decision -->|REJETER| InputReason
+    Validate --> LogValidate
+    InputReason --> Reject
+    Reject --> LogReject
+    LogValidate --> NotifyTS
+    LogReject --> NotifyAgence
+    NotifyTS --> ReadyAssign
+    NotifyAgence --> EndCycle

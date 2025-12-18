@@ -1,0 +1,28 @@
+graph LR
+    CC((Caisse<br/>Centrale))
+    TS((Tunisie<br/>Sécurité))
+    Sys((Système))
+    
+    ValidateReq[Valider demande]
+    RejectReq[Rejeter demande]
+    AssignTeam[Assigner équipe]
+    ViewTeams[Voir équipes disponibles]
+    LogAction[Enregistrer action]
+    Notify[Notifier parties]
+    
+    CC --> ValidateReq
+    CC --> RejectReq
+    
+    TS --> AssignTeam
+    TS --> ViewTeams
+    
+    ValidateReq --> LogAction
+    RejectReq --> LogAction
+    AssignTeam --> LogAction
+    
+    Sys -.effectue.-> LogAction
+    Sys -.effectue.-> Notify
+    
+    style CC fill:#10b981,stroke:#059669,color:#fff
+    style TS fill:#ef4444,stroke:#dc2626,color:#fff
+    style Sys fill:#6b7280,stroke:#4b5563,color:#fff

@@ -1,0 +1,18 @@
+graph TD
+    DG[Direction Générale<br/>Amen Bank]
+    CC[Caisse Centrale<br/>Trésorerie]
+    TS[Tunisie Sécurité<br/>Transport Fonds]
+    AG[Réseau Agences<br/>Régionales]
+    
+    DG --> CC
+    DG --> TS
+    DG --> AG
+    
+    CC -.Validation.-> AG
+    TS -.Transport.-> AG
+    AG -.Demandes.-> CC
+    
+    style DG fill:#1e40af,stroke:#1e3a8a,color:#fff
+    style CC fill:#059669,stroke:#047857,color:#fff
+    style TS fill:#dc2626,stroke:#b91c1c,color:#fff
+    style AG fill:#7c3aed,stroke:#6d28d9,color:#fff

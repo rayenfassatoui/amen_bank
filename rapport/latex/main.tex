@@ -1,0 +1,126 @@
+\documentclass[12pt,a4paper]{report}
+
+% Packages
+\usepackage[utf8]{inputenc}
+\usepackage[french]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{geometry}
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{tocloft}
+\usepackage{longtable}
+\usepackage{booktabs}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{float}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+% Page geometry
+\geometry{
+    left=3cm,
+    right=2.5cm,
+    top=2.5cm,
+    bottom=2.5cm
+}
+
+% Hyperref setup
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+    pdftitle={Système de Gestion des Fonds Bancaires - Amen Bank},
+    pdfauthor={},
+    bookmarks=true,
+}
+
+% Code listings setup
+\lstset{
+    basicstyle=\ttfamily\footnotesize,
+    breaklines=true,
+    frame=single,
+    backgroundcolor=\color{gray!10},
+    commentstyle=\color{green!50!black},
+    keywordstyle=\color{blue},
+    stringstyle=\color{red}
+}
+
+% Headers and footers
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\leftmark}
+\fancyhead[R]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% Graphics path
+\graphicspath{{../diagrams/}}
+
+% Title formatting
+\titleformat{\chapter}[display]
+  {\normalfont\huge\bfseries}{\chaptertitlename\ \thechapter}{20pt}{\Huge}
+\titlespacing*{\chapter}{0pt}{-20pt}{20pt}
+
+\begin{document}
+
+% Page de garde
+\input{chapters/0-cover.tex}
+
+% Pages liminaires
+\pagenumbering{roman}
+\input{chapters/0-dedication.tex}
+\input{chapters/0-acknowledgments.tex}
+\input{chapters/0-abstract.tex}
+
+% Table des matières
+\tableofcontents
+\newpage
+
+% Liste des figures
+\listoffigures
+\newpage
+
+% Liste des tableaux
+\listoftables
+\newpage
+
+% Liste des acronymes
+\input{chapters/0-acronyms.tex}
+
+% Corps du rapport
+\newpage
+\pagenumbering{arabic}
+
+% Introduction générale
+\input{chapters/0-introduction.tex}
+
+% Chapitre 1
+\input{chapters/1-cadre-general.tex}
+
+% Chapitre 2
+\input{chapters/2-etat-art.tex}
+
+% Chapitre 3
+\input{chapters/3-sprint1.tex}
+
+% Chapitre 4
+\input{chapters/4-sprint2.tex}
+
+% Chapitre 5
+\input{chapters/5-sprint3.tex}
+
+% Chapitre 6
+\input{chapters/6-sprint4.tex}
+
+% Conclusion générale
+\input{chapters/7-conclusion.tex}
+
+% Bibliographie
+\input{chapters/8-bibliography.tex}
+
+\end{document}

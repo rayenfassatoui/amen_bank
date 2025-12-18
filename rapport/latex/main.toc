@@ -1,0 +1,260 @@
+\babel@toc {french}{}\relax 
+\contentsline {chapter}{Dédicace}{i}{chapter*.1}%
+\contentsline {chapter}{Remerciements}{ii}{chapter*.2}%
+\contentsline {chapter}{Résumé}{iii}{chapter*.3}%
+\contentsline {chapter}{Abstract}{iv}{chapter*.4}%
+\contentsline {chapter}{Liste des Acronymes}{xi}{chapter*.5}%
+\contentsline {chapter}{Introduction Générale}{1}{chapter*.6}%
+\contentsline {chapter}{\numberline {1}Cadre Général du Projet}{4}{chapter.1}%
+\contentsline {section}{\numberline {1.1}Introduction}{4}{section.1.1}%
+\contentsline {section}{\numberline {1.2}Présentation d'Amen Bank}{4}{section.1.2}%
+\contentsline {subsection}{\numberline {1.2.1}Historique et Position sur le Marché}{4}{subsection.1.2.1}%
+\contentsline {subsection}{\numberline {1.2.2}Services Offerts}{4}{subsection.1.2.2}%
+\contentsline {subsection}{\numberline {1.2.3}Structure Organisationnelle}{5}{subsection.1.2.3}%
+\contentsline {section}{\numberline {1.3}Cadrage du Projet}{6}{section.1.3}%
+\contentsline {subsection}{\numberline {1.3.1}Problème Identifié}{6}{subsection.1.3.1}%
+\contentsline {subsection}{\numberline {1.3.2}Solution Proposée}{6}{subsection.1.3.2}%
+\contentsline {section}{\numberline {1.4}Étude de l'Existant}{6}{section.1.4}%
+\contentsline {subsection}{\numberline {1.4.1}Solutions Concurrentes sur le Marché}{6}{subsection.1.4.1}%
+\contentsline {subsubsection}{SAP Banking Services}{7}{subsection.1.4.1}%
+\contentsline {subsubsection}{Oracle FLEXCUBE}{7}{subsection.1.4.1}%
+\contentsline {subsubsection}{Solutions Custom Développées en Interne}{7}{subsection.1.4.1}%
+\contentsline {subsection}{\numberline {1.4.2}Critique et Positionnement}{8}{subsection.1.4.2}%
+\contentsline {section}{\numberline {1.5}Méthodologie de Travail Adoptée}{8}{section.1.5}%
+\contentsline {subsection}{\numberline {1.5.1}Comparaison des Méthodologies}{8}{subsection.1.5.1}%
+\contentsline {subsubsection}{Méthodologie en Cascade (Waterfall)}{8}{subsection.1.5.1}%
+\contentsline {subsubsection}{Méthodologie Agile}{8}{subsection.1.5.1}%
+\contentsline {subsection}{\numberline {1.5.2}Choix Justifié : Scrum}{9}{subsection.1.5.2}%
+\contentsline {subsection}{\numberline {1.5.3}Cadre Scrum}{9}{subsection.1.5.3}%
+\contentsline {subsubsection}{Rôles}{9}{subsection.1.5.3}%
+\contentsline {subsubsection}{Événements Scrum}{9}{subsection.1.5.3}%
+\contentsline {subsubsection}{Artefacts}{9}{subsection.1.5.3}%
+\contentsline {subsection}{\numberline {1.5.4}Planification Temporelle}{10}{subsection.1.5.4}%
+\contentsline {subsubsection}{Répartition des Sprints}{10}{subsection.1.5.4}%
+\contentsline {subsubsection}{Diagramme de Gantt}{10}{subsection.1.5.4}%
+\contentsline {section}{\numberline {1.6}Conclusion}{11}{section.1.6}%
+\contentsline {chapter}{\numberline {2}État de l'Art et Technologies}{12}{chapter.2}%
+\contentsline {section}{\numberline {2.1}Introduction}{12}{section.2.1}%
+\contentsline {section}{\numberline {2.2}Concepts Métiers Bancaires}{12}{section.2.2}%
+\contentsline {subsection}{\numberline {2.2.1}Gestion de Trésorerie}{12}{subsection.2.2.1}%
+\contentsline {subsubsection}{Enjeux de la Trésorerie Bancaire}{12}{subsection.2.2.1}%
+\contentsline {subsubsection}{Mouvements de Fonds Inter-Agences}{12}{subsection.2.2.1}%
+\contentsline {subsection}{\numberline {2.2.2}Types de Mouvements}{12}{subsection.2.2.2}%
+\contentsline {subsubsection}{Provisionnement (Remittance)}{13}{subsection.2.2.2}%
+\contentsline {subsubsection}{Versement (Cash Supply)}{13}{subsection.2.2.2}%
+\contentsline {subsection}{\numberline {2.2.3}Workflow d'Approbation Multiniveaux}{13}{subsection.2.2.3}%
+\contentsline {subsubsection}{Étapes du Workflow}{13}{subsection.2.2.3}%
+\contentsline {subsubsection}{Acteurs et Responsabilités}{13}{Item.16}%
+\contentsline {subsubsection}{Diagramme de Flux des États}{14}{Item.16}%
+\contentsline {subsection}{\numberline {2.2.4}Traçabilité et Audit Trail}{14}{subsection.2.2.4}%
+\contentsline {subsubsection}{Éléments Tracés}{15}{subsection.2.2.4}%
+\contentsline {section}{\numberline {2.3}Pile Technologique}{15}{section.2.3}%
+\contentsline {subsection}{\numberline {2.3.1}Architecture Générale}{15}{subsection.2.3.1}%
+\contentsline {subsubsection}{Pattern Architectural}{15}{subsection.2.3.1}%
+\contentsline {subsubsection}{Architecture Trois Tiers}{15}{subsection.2.3.1}%
+\contentsline {subsubsection}{Architecture Serverless}{15}{subsection.2.3.1}%
+\contentsline {subsection}{\numberline {2.3.2}Technologies Frontend}{16}{subsection.2.3.2}%
+\contentsline {subsubsection}{Next.js 15}{16}{subsection.2.3.2}%
+\contentsline {subsubsection}{TypeScript}{16}{subsection.2.3.2}%
+\contentsline {subsubsection}{Tailwind CSS et Radix UI}{16}{subsection.2.3.2}%
+\contentsline {subsubsection}{Zustand}{16}{subsection.2.3.2}%
+\contentsline {subsubsection}{Zod}{16}{subsection.2.3.2}%
+\contentsline {subsection}{\numberline {2.3.3}Technologies Backend}{17}{subsection.2.3.3}%
+\contentsline {subsubsection}{Node.js 18+}{17}{subsection.2.3.3}%
+\contentsline {subsubsection}{Next.js API Routes}{17}{subsection.2.3.3}%
+\contentsline {subsubsection}{PostgreSQL}{17}{lstnumber.-1.5}%
+\contentsline {subsubsection}{Prisma ORM}{17}{lstnumber.-1.5}%
+\contentsline {subsubsection}{NextAuth.js}{18}{lstnumber.-2.14}%
+\contentsline {subsection}{\numberline {2.3.4}Sécurité}{18}{subsection.2.3.4}%
+\contentsline {subsubsection}{Hashing des Mots de Passe : bcrypt}{18}{subsection.2.3.4}%
+\contentsline {subsubsection}{JSON Web Tokens (JWT)}{18}{lstnumber.-3.7}%
+\contentsline {subsubsection}{Middleware de Protection}{19}{lstnumber.-3.7}%
+\contentsline {subsubsection}{RBAC : Role-Based Access Control}{19}{lstnumber.-4.10}%
+\contentsline {subsection}{\numberline {2.3.5}Outils de Développement}{19}{subsection.2.3.5}%
+\contentsline {subsubsection}{Version Control : Git + GitHub}{19}{subsection.2.3.5}%
+\contentsline {subsubsection}{IDE : Visual Studio Code}{19}{subsection.2.3.5}%
+\contentsline {subsubsection}{Gestion BD : Prisma Studio}{20}{subsection.2.3.5}%
+\contentsline {subsubsection}{API Testing : Postman}{20}{subsection.2.3.5}%
+\contentsline {subsubsection}{Formatage et Linting}{20}{subsection.2.3.5}%
+\contentsline {subsubsection}{Package Manager}{20}{subsection.2.3.5}%
+\contentsline {subsection}{\numberline {2.3.6}Tableau Comparatif des Technologies}{20}{subsection.2.3.6}%
+\contentsline {section}{\numberline {2.4}Conclusion}{21}{section.2.4}%
+\contentsline {chapter}{\numberline {3}Sprint 1 - Architecture et Authentification}{22}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Introduction}{22}{section.3.1}%
+\contentsline {section}{\numberline {3.2}Objectifs du Sprint}{22}{section.3.2}%
+\contentsline {section}{\numberline {3.3}Spécification des Besoins}{22}{section.3.3}%
+\contentsline {subsection}{\numberline {3.3.1}Besoins Fonctionnels}{22}{subsection.3.3.1}%
+\contentsline {subsubsection}{Authentification}{22}{subsection.3.3.1}%
+\contentsline {subsubsection}{Gestion des Utilisateurs}{23}{subsection.3.3.1}%
+\contentsline {subsubsection}{Gestion des Rôles et Agences}{23}{subsection.3.3.1}%
+\contentsline {subsubsection}{Tableau de Bord}{23}{subsection.3.3.1}%
+\contentsline {subsection}{\numberline {3.3.2}Besoins Non-Fonctionnels}{23}{subsection.3.3.2}%
+\contentsline {subsubsection}{Sécurité}{23}{subsection.3.3.2}%
+\contentsline {subsubsection}{Performance}{23}{subsection.3.3.2}%
+\contentsline {subsubsection}{Ergonomie}{23}{subsection.3.3.2}%
+\contentsline {subsubsection}{Maintenabilité}{24}{subsection.3.3.2}%
+\contentsline {subsection}{\numberline {3.3.3}Acteurs Identifiés}{24}{subsection.3.3.3}%
+\contentsline {subsection}{\numberline {3.3.4}Diagramme de Cas d'Utilisation - Sprint 1}{24}{subsection.3.3.4}%
+\contentsline {section}{\numberline {3.4}Conception du Sprint}{26}{section.3.4}%
+\contentsline {subsection}{\numberline {3.4.1}Diagramme de Classes - Entités Principales}{26}{subsection.3.4.1}%
+\contentsline {subsection}{\numberline {3.4.2}Diagramme de Séquence - Processus de Connexion}{28}{subsection.3.4.2}%
+\contentsline {subsection}{\numberline {3.4.3}Diagramme de Séquence - Création d'Utilisateur}{29}{subsection.3.4.3}%
+\contentsline {subsection}{\numberline {3.4.4}Diagramme d'Activités - Flux d'Authentification}{30}{subsection.3.4.4}%
+\contentsline {subsection}{\numberline {3.4.5}Modèle de Données - Schema Prisma}{31}{subsection.3.4.5}%
+\contentsline {section}{\numberline {3.5}Réalisation du Sprint}{32}{section.3.5}%
+\contentsline {subsection}{\numberline {3.5.1}Composants Frontend Développés}{32}{subsection.3.5.1}%
+\contentsline {subsubsection}{Page de Login (\texttt {app/login/page.tsx})}{32}{subsection.3.5.1}%
+\contentsline {subsubsection}{Dashboard Layout (\texttt {components/layout/dashboard-layout.tsx})}{32}{subsection.3.5.1}%
+\contentsline {subsubsection}{Protected Route (\texttt {components/auth/protected-route.tsx})}{32}{subsection.3.5.1}%
+\contentsline {subsubsection}{User Management (Admin)}{32}{subsection.3.5.1}%
+\contentsline {subsection}{\numberline {3.5.2}Routes API Implémentées}{32}{subsection.3.5.2}%
+\contentsline {subsubsection}{Authentification}{32}{subsection.3.5.2}%
+\contentsline {subsubsection}{Gestion des Utilisateurs}{33}{subsection.3.5.2}%
+\contentsline {subsubsection}{Rôles et Agences}{33}{subsection.3.5.2}%
+\contentsline {subsection}{\numberline {3.5.3}Composants Logique (Services)}{33}{subsection.3.5.3}%
+\contentsline {subsubsection}{Configuration NextAuth (\texttt {lib/auth.ts})}{33}{subsection.3.5.3}%
+\contentsline {subsubsection}{Utilitaires Auth (\texttt {lib/auth-utils.ts})}{33}{subsection.3.5.3}%
+\contentsline {subsubsection}{Database Client (\texttt {lib/db.ts})}{33}{subsection.3.5.3}%
+\contentsline {subsection}{\numberline {3.5.4}Composants UI Réutilisables}{34}{subsection.3.5.4}%
+\contentsline {section}{\numberline {3.6}Tests et Validation}{34}{section.3.6}%
+\contentsline {subsection}{\numberline {3.6.1}Tests Fonctionnels}{34}{subsection.3.6.1}%
+\contentsline {subsubsection}{Authentification}{34}{subsection.3.6.1}%
+\contentsline {subsubsection}{Gestion des Utilisateurs}{34}{subsection.3.6.1}%
+\contentsline {subsubsection}{Permissions par Rôle}{35}{subsection.3.6.1}%
+\contentsline {subsection}{\numberline {3.6.2}Tests de Sécurité}{35}{subsection.3.6.2}%
+\contentsline {section}{\numberline {3.7}Revue de Sprint}{35}{section.3.7}%
+\contentsline {subsection}{\numberline {3.7.1}Démonstration}{35}{subsection.3.7.1}%
+\contentsline {subsection}{\numberline {3.7.2}Validation Product Owner}{35}{subsection.3.7.2}%
+\contentsline {subsection}{\numberline {3.7.3}Feedback et Ajustements}{35}{subsection.3.7.3}%
+\contentsline {subsection}{\numberline {3.7.4}Métriques du Sprint}{36}{subsection.3.7.4}%
+\contentsline {section}{\numberline {3.8}Conclusion du Chapitre}{36}{section.3.8}%
+\contentsline {chapter}{\numberline {4}Sprint 2 - Module Gestion des Demandes}{37}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Introduction}{37}{section.4.1}%
+\contentsline {section}{\numberline {4.2}Vue d'Ensemble}{37}{section.4.2}%
+\contentsline {section}{\numberline {4.3}Objectif Principal}{37}{section.4.3}%
+\contentsline {section}{\numberline {4.4}User Stories Détaillées}{37}{section.4.4}%
+\contentsline {section}{\numberline {4.5}Analyse et Spécifications}{38}{section.4.5}%
+\contentsline {subsection}{\numberline {4.5.1}Diagramme de Cas d'Utilisation - Sprint 2}{38}{subsection.4.5.1}%
+\contentsline {subsection}{\numberline {4.5.2}Raffinements Textuels - Scénario Nominal}{39}{subsection.4.5.2}%
+\contentsline {subsubsection}{Cas d'utilisation : Créer une Demande}{39}{subsection.4.5.2}%
+\contentsline {subsubsection}{Scénario Alternatif : Montants Incohérents}{40}{Item.61}%
+\contentsline {subsection}{\numberline {4.5.3}Diagramme de Classes - Entités Demandes}{40}{subsection.4.5.3}%
+\contentsline {subsection}{\numberline {4.5.4}Diagramme de Séquence - Création Demande}{42}{subsection.4.5.4}%
+\contentsline {subsection}{\numberline {4.5.5}Diagramme d'Activités - Consultation Demandes}{44}{subsection.4.5.5}%
+\contentsline {section}{\numberline {4.6}Conception Détaillée}{45}{section.4.6}%
+\contentsline {subsection}{\numberline {4.6.1}Architecture Composants Frontend}{45}{subsection.4.6.1}%
+\contentsline {subsection}{\numberline {4.6.2}Routes API}{45}{subsection.4.6.2}%
+\contentsline {subsection}{\numberline {4.6.3}Schémas de Validation Zod}{45}{subsection.4.6.3}%
+\contentsline {section}{\numberline {4.7}Réalisation - Implémentation}{46}{section.4.7}%
+\contentsline {subsection}{\numberline {4.7.1}Composant Création Demande}{46}{subsection.4.7.1}%
+\contentsline {subsubsection}{Formulaire Principal}{46}{subsection.4.7.1}%
+\contentsline {subsubsection}{Gestion de l'État Local}{47}{subsection.4.7.1}%
+\contentsline {subsection}{\numberline {4.7.2}Composant Liste Demandes}{47}{subsection.4.7.2}%
+\contentsline {subsubsection}{Tableau des Demandes}{47}{subsection.4.7.2}%
+\contentsline {subsubsection}{Système de Filtrage}{47}{subsection.4.7.2}%
+\contentsline {subsubsection}{Pagination}{48}{subsection.4.7.2}%
+\contentsline {subsection}{\numberline {4.7.3}Composant Détails Demande}{48}{subsection.4.7.3}%
+\contentsline {subsubsection}{Header}{48}{subsection.4.7.3}%
+\contentsline {subsubsection}{Section Informations Générales}{48}{subsection.4.7.3}%
+\contentsline {subsubsection}{Section Détails Denominations}{48}{subsection.4.7.3}%
+\contentsline {subsubsection}{Section Timeline / Historique}{48}{subsection.4.7.3}%
+\contentsline {subsubsection}{Actions Disponibles}{49}{subsection.4.7.3}%
+\contentsline {subsection}{\numberline {4.7.4}État Zustand - Request Store}{49}{subsection.4.7.4}%
+\contentsline {section}{\numberline {4.8}Tests et Validation}{50}{section.4.8}%
+\contentsline {subsection}{\numberline {4.8.1}Tests Fonctionnels}{50}{subsection.4.8.1}%
+\contentsline {subsubsection}{Création de Demandes}{50}{subsection.4.8.1}%
+\contentsline {subsubsection}{Consultation}{50}{subsection.4.8.1}%
+\contentsline {subsubsection}{Détails}{50}{subsection.4.8.1}%
+\contentsline {subsection}{\numberline {4.8.2}Tests de Performance}{50}{subsection.4.8.2}%
+\contentsline {subsection}{\numberline {4.8.3}Tests d'Intégration}{51}{subsection.4.8.3}%
+\contentsline {section}{\numberline {4.9}Revue de Sprint}{51}{section.4.9}%
+\contentsline {subsection}{\numberline {4.9.1}Démonstration}{51}{subsection.4.9.1}%
+\contentsline {subsection}{\numberline {4.9.2}Validation Product Owner}{51}{subsection.4.9.2}%
+\contentsline {subsection}{\numberline {4.9.3}Feedback}{51}{subsection.4.9.3}%
+\contentsline {subsection}{\numberline {4.9.4}Métriques du Sprint}{51}{subsection.4.9.4}%
+\contentsline {section}{\numberline {4.10}Conclusion du Chapitre}{52}{section.4.10}%
+\contentsline {chapter}{\numberline {5}Sprint 3 - Module Validation et Assignment}{53}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Introduction}{53}{section.5.1}%
+\contentsline {section}{\numberline {5.2}Vue d'Ensemble}{53}{section.5.2}%
+\contentsline {section}{\numberline {5.3}Objectif Principal}{53}{section.5.3}%
+\contentsline {section}{\numberline {5.4}User Stories Détaillées}{53}{section.5.4}%
+\contentsline {section}{\numberline {5.5}Analyse et Spécifications}{54}{section.5.5}%
+\contentsline {subsection}{\numberline {5.5.1}Diagramme de Cas d'Utilisation - Sprint 3}{54}{subsection.5.5.1}%
+\contentsline {subsection}{\numberline {5.5.2}Raffinements Textuels - Scénario Validation}{55}{subsection.5.5.2}%
+\contentsline {subsubsection}{Cas d'utilisation : Valider une Demande}{55}{subsection.5.5.2}%
+\contentsline {subsubsection}{Scénario Alternatif : Rejet avec Motif}{55}{Item.104}%
+\contentsline {subsection}{\numberline {5.5.3}Raffinements Textuels - Scénario Assignment}{56}{subsection.5.5.3}%
+\contentsline {subsubsection}{Cas d'utilisation : Assigner une Équipe}{56}{subsection.5.5.3}%
+\contentsline {subsection}{\numberline {5.5.4}Diagramme de Classes - Entités Validation/Assignment}{57}{subsection.5.5.4}%
+\contentsline {subsection}{\numberline {5.5.5}Diagramme de Séquence - Validation}{60}{subsection.5.5.5}%
+\contentsline {subsection}{\numberline {5.5.6}Diagramme de Séquence - Assignment Équipe}{61}{subsection.5.5.6}%
+\contentsline {subsection}{\numberline {5.5.7}Diagramme d'Activités - Validation Workflow}{62}{subsection.5.5.7}%
+\contentsline {section}{\numberline {5.6}Conception Détaillée}{63}{section.5.6}%
+\contentsline {subsection}{\numberline {5.6.1}Architecture Composants Frontend}{63}{subsection.5.6.1}%
+\contentsline {subsection}{\numberline {5.6.2}Routes API}{64}{subsection.5.6.2}%
+\contentsline {subsection}{\numberline {5.6.3}Middleware - Vérification Permissions}{64}{subsection.5.6.3}%
+\contentsline {section}{\numberline {5.7}Réalisation - Implémentation}{65}{section.5.7}%
+\contentsline {subsection}{\numberline {5.7.1}Dialog Validation}{65}{subsection.5.7.1}%
+\contentsline {subsection}{\numberline {5.7.2}Dialog Rejet}{65}{subsection.5.7.2}%
+\contentsline {subsection}{\numberline {5.7.3}Dialog Assignment Équipe}{66}{subsection.5.7.3}%
+\contentsline {subsection}{\numberline {5.7.4}Component Timeline Actions}{66}{subsection.5.7.4}%
+\contentsline {subsection}{\numberline {5.7.5}Affichage Conditionnel des Actions}{66}{subsection.5.7.5}%
+\contentsline {section}{\numberline {5.8}Tests et Validation}{67}{section.5.8}%
+\contentsline {subsection}{\numberline {5.8.1}Tests Fonctionnels}{67}{subsection.5.8.1}%
+\contentsline {subsubsection}{Validation}{67}{subsection.5.8.1}%
+\contentsline {subsubsection}{Rejet}{67}{subsection.5.8.1}%
+\contentsline {subsubsection}{Assignment}{67}{subsection.5.8.1}%
+\contentsline {subsubsection}{Traçabilité}{68}{subsection.5.8.1}%
+\contentsline {subsection}{\numberline {5.8.2}Tests de Sécurité}{68}{subsection.5.8.2}%
+\contentsline {section}{\numberline {5.9}Revue de Sprint}{68}{section.5.9}%
+\contentsline {subsection}{\numberline {5.9.1}Démonstration}{68}{subsection.5.9.1}%
+\contentsline {subsection}{\numberline {5.9.2}Validation Product Owner}{68}{subsection.5.9.2}%
+\contentsline {subsection}{\numberline {5.9.3}Feedback}{69}{subsection.5.9.3}%
+\contentsline {subsection}{\numberline {5.9.4}Métriques du Sprint}{69}{subsection.5.9.4}%
+\contentsline {section}{\numberline {5.10}Conclusion du Chapitre}{69}{section.5.10}%
+\contentsline {chapter}{\numberline {6}Sprint 4 - Module Dispatch et Analytics}{70}{chapter.6}%
+\contentsline {section}{\numberline {6.1}Introduction}{70}{section.6.1}%
+\contentsline {section}{\numberline {6.2}Vue d'Ensemble}{70}{section.6.2}%
+\contentsline {section}{\numberline {6.3}Objectif Principal}{70}{section.6.3}%
+\contentsline {section}{\numberline {6.4}User Stories Détaillées}{70}{section.6.4}%
+\contentsline {section}{\numberline {6.5}Analyse et Spécifications}{71}{section.6.5}%
+\contentsline {subsection}{\numberline {6.5.1}Diagramme de Cas d'Utilisation - Sprint 4}{71}{subsection.6.5.1}%
+\contentsline {subsection}{\numberline {6.5.2}Raffinements Textuels - Scénario Dispatch}{72}{subsection.6.5.2}%
+\contentsline {subsubsection}{Cas d'utilisation : Confirmer Dispatch}{72}{subsection.6.5.2}%
+\contentsline {subsection}{\numberline {6.5.3}Raffinements Textuels - Scénario Réception}{73}{subsection.6.5.3}%
+\contentsline {subsubsection}{Cas d'utilisation : Recevoir Demande}{73}{subsection.6.5.3}%
+\contentsline {subsubsection}{Scénario Alternatif : Non-Conformité}{74}{Item.200}%
+\contentsline {subsection}{\numberline {6.5.4}Diagramme de Séquence - Dispatch}{74}{subsection.6.5.4}%
+\contentsline {subsection}{\numberline {6.5.5}Diagramme de Séquence - Réception}{75}{subsection.6.5.5}%
+\contentsline {subsection}{\numberline {6.5.6}Diagramme d'Activités - Flux Réception}{76}{subsection.6.5.6}%
+\contentsline {subsection}{\numberline {6.5.7}Spécifications Analytics}{77}{subsection.6.5.7}%
+\contentsline {subsubsection}{KPIs à Afficher}{77}{subsection.6.5.7}%
+\contentsline {subsubsection}{Graphiques}{78}{Item.219}%
+\contentsline {subsubsection}{Tables Agrégées}{78}{Item.223}%
+\contentsline {subsubsection}{Filtres Analytics}{78}{Item.225}%
+\contentsline {section}{\numberline {6.6}Conception Détaillée}{79}{section.6.6}%
+\contentsline {subsection}{\numberline {6.6.1}Architecture Composants Frontend}{79}{subsection.6.6.1}%
+\contentsline {subsection}{\numberline {6.6.2}Routes API}{79}{subsection.6.6.2}%
+\contentsline {subsection}{\numberline {6.6.3}Calculs KPIs (Backend)}{80}{subsection.6.6.3}%
+\contentsline {section}{\numberline {6.7}Réalisation - Implémentation}{80}{section.6.7}%
+\contentsline {subsection}{\numberline {6.7.1}Dialog Dispatch}{80}{subsection.6.7.1}%
+\contentsline {subsection}{\numberline {6.7.2}Dialog Réception}{81}{subsection.6.7.2}%
+\contentsline {subsection}{\numberline {6.7.3}Page Dashboard Analytics}{81}{subsection.6.7.3}%
+\contentsline {subsection}{\numberline {6.7.4}Composant KPI Card}{82}{subsection.6.7.4}%
+\contentsline {subsection}{\numberline {6.7.5}Charts avec Recharts}{82}{subsection.6.7.5}%
+\contentsline {subsection}{\numberline {6.7.6}État Zustand - Analytics Store}{83}{subsection.6.7.6}%
+\contentsline {section}{\numberline {6.8}Tests et Validation}{84}{section.6.8}%
+\contentsline {subsection}{\numberline {6.8.1}Tests Fonctionnels}{84}{subsection.6.8.1}%
+\contentsline {subsubsection}{Dispatch}{84}{subsection.6.8.1}%
+\contentsline {subsubsection}{Réception}{84}{subsection.6.8.1}%
+\contentsline {subsubsection}{Analytics}{84}{subsection.6.8.1}%
+\contentsline {subsection}{\numberline {6.8.2}Tests d'Intégration End-to-End}{84}{subsection.6.8.2}%
+\contentsline {section}{\numberline {6.9}Revue de Sprint}{85}{section.6.9}%
+\contentsline {subsection}{\numberline {6.9.1}Démonstration Finale}{85}{subsection.6.9.1}%
+\contentsline {subsection}{\numberline {6.9.2}Validation Product Owner}{85}{subsection.6.9.2}%
+\contentsline {subsection}{\numberline {6.9.3}Feedback}{85}{subsection.6.9.3}%
+\contentsline {subsection}{\numberline {6.9.4}Métriques du Sprint}{85}{subsection.6.9.4}%
+\contentsline {subsection}{\numberline {6.9.5}Métriques Globales du Projet}{86}{subsection.6.9.5}%
+\contentsline {section}{\numberline {6.10}Conclusion du Chapitre}{86}{section.6.10}%
+\contentsline {chapter}{Conclusion Générale}{87}{chapter*.32}%
+\contentsline {chapter}{Bibliographie}{93}{chapter*.33}%

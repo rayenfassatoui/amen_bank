@@ -1,0 +1,710 @@
+\chapter{Sprint 4 - Module Dispatch et Analytics}
+
+\section{Introduction}
+
+Le Sprint 4 constitue la phase finale du développement, avec deux objectifs majeurs : finaliser le cycle de traitement des demandes (dispatch et réception) et développer le module analytics pour fournir une visibilité stratégique sur les opérations. Ce sprint transforme le système en une solution complète et opérationnelle.
+
+\section{Vue d'Ensemble}
+
+Le Sprint 4 couvre :
+
+\begin{enumerate}[leftmargin=*]
+    \item \textbf{Module Dispatch et Réception} :
+    \begin{itemize}
+        \item Confirmation du dispatch par Tunisie Sécurité
+        \item Réception des fonds par les agences
+        \item Gestion des non-conformités
+    \end{itemize}
+    
+    \item \textbf{Module Analytics} :
+    \begin{itemize}
+        \item Tableau de bord avec KPIs
+        \item Graphiques et visualisations
+        \item Filtrage temporel et par critères
+        \item Export des données
+    \end{itemize}
+\end{enumerate}
+
+\section{Objectif Principal}
+
+L'objectif principal est de compléter le cycle de vie des demandes avec traçabilité jusqu'à la livraison finale, tout en fournissant aux décideurs les outils d'analyse nécessaires pour optimiser les processus et détecter les anomalies.
+
+\section{User Stories Détaillées}
+
+Le tableau \ref{tab:user-stories-sprint4} présente les user stories du Sprint 4.
+
+\begin{table}[H]
+\centering
+\caption{User Stories - Sprint 4}
+\label{tab:user-stories-sprint4}
+\small
+\begin{tabular}{@{}p{1cm}p{2.5cm}p{5cm}p{4cm}p{1.5cm}@{}}
+\toprule
+\textbf{ID} & \textbf{En tant que} & \textbf{Je veux} & \textbf{Critères d'acceptation} & \textbf{Priorité} \\ 
+\midrule
+US-12 & Tunisie Sécurité & Confirmer le dispatch & Transition ASSIGNED → DISPATCHED & Must \\
+\midrule
+US-13 & Agence & Confirmer la réception & Transition DISPATCHED → RECEIVED & Must \\
+\midrule
+US-14 & Agence & Signaler non-conformité & Ajouter raison + statut spécial & Should \\
+\midrule
+US-15 & Administrateur & Voir analytics globales & Charts, KPIs, tables & Must \\
+\midrule
+US-16 & Administrateur & Exporter données & Export Excel/PDF & Should \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Analyse et Spécifications}
+
+\subsection{Diagramme de Cas d'Utilisation - Sprint 4}
+
+La figure \ref{fig:use-case-sprint4} présente les cas d'utilisation du Sprint 4.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{use-case-sprint4.png}
+    \caption{Diagramme de cas d'utilisation - Sprint 4}
+    \label{fig:use-case-sprint4}
+\end{figure}
+
+Les cas d'utilisation incluent :
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Dispatcher demande} : Confirmation départ équipe
+    \item \textbf{Recevoir demande} : Confirmation arrivée fonds
+    \item \textbf{Déclarer non-conformité} : Signalement problème
+    \item \textbf{Consulter analytics} : Vue KPIs et graphiques
+    \item \textbf{Exporter données} : Génération rapports
+\end{itemize}
+
+\subsection{Raffinements Textuels - Scénario Dispatch}
+
+\subsubsection{Cas d'utilisation : Confirmer Dispatch}
+
+\textbf{Acteur Principal :} Utilisateur Tunisie Sécurité
+
+\textbf{Préconditions :}
+\begin{itemize}[leftmargin=*]
+    \item L'utilisateur est authentifié avec le rôle Tunisie Sécurité
+    \item Une demande existe avec statut ASSIGNED
+    \item Une équipe est assignée
+\end{itemize}
+
+\textbf{Scénario nominal :}
+\begin{enumerate}[leftmargin=*]
+    \item L'utilisateur accède à la liste des demandes assignées (statut = ASSIGNED)
+    \item L'utilisateur vérifie les détails de la demande et de l'équipe
+    \item L'équipe est prête à partir avec les fonds
+    \item L'utilisateur clique sur "Confirmer Dispatch"
+    \item Le système affiche un dialog de confirmation
+    \item Dialog affiche : numéro demande, agence destination, équipe assignée
+    \item L'utilisateur confirme le dispatch
+    \item Le système met à jour status → DISPATCHED
+    \item Le système enregistre dispatchedAt (timestamp) et dispatchedBy (userId)
+    \item Le système crée un ActionLog
+    \item Le système envoie une notification à l'agence destinataire
+    \item Le système affiche un message de succès
+    \item La demande disparaît de la liste ASSIGNED
+\end{enumerate}
+
+\textbf{Postconditions :}
+\begin{itemize}[leftmargin=*]
+    \item La demande est en transit (status = DISPATCHED)
+    \item L'agence est notifiée de l'arrivée imminente
+    \item Les fonds sont en route
+\end{itemize}
+
+\subsection{Raffinements Textuels - Scénario Réception}
+
+\subsubsection{Cas d'utilisation : Recevoir Demande}
+
+\textbf{Acteur Principal :} Utilisateur Agence
+
+\textbf{Préconditions :}
+\begin{itemize}[leftmargin=*]
+    \item L'utilisateur est authentifié avec le rôle Agence
+    \item Une demande de son agence existe avec statut DISPATCHED
+    \item Les fonds sont physiquement arrivés
+\end{itemize}
+
+\textbf{Scénario nominal :}
+\begin{enumerate}[leftmargin=*]
+    \item L'utilisateur accède à la liste des demandes en attente de réception
+    \item L'utilisateur reçoit physiquement les fonds de l'équipe
+    \item L'utilisateur vérifie la conformité (montant, coupures)
+    \item L'utilisateur clique sur "Confirmer Réception"
+    \item Le système affiche un dialog avec formulaire
+    \item Formulaire contient :
+    \begin{itemize}
+        \item Checkbox "Conforme ?" (checked par défaut)
+        \item Si décoché : Textarea "Raison de non-conformité" (obligatoire)
+        \item Textarea "Notes additionnelles" (optionnel)
+    \end{itemize}
+    \item L'utilisateur confirme que tout est conforme
+    \item L'utilisateur clique sur "Recevoir"
+    \item Le système met à jour status → RECEIVED
+    \item Le système enregistre receivedAt, receivedBy
+    \item Le système crée un ActionLog
+    \item Le système envoie notifications (Caisse Centrale, Tunisie Sécurité)
+    \item Le système affiche un message de succès
+    \item Le cycle est terminé
+\end{enumerate}
+
+\textbf{Postconditions :}
+\begin{itemize}[leftmargin=*]
+    \item La demande est complétée (status = RECEIVED ou COMPLETED)
+    \item Les fonds sont entre les mains de l'agence
+    \item Tous les acteurs sont notifiés
+\end{itemize}
+
+\subsubsection{Scénario Alternatif : Non-Conformité}
+
+\textbf{Point de divergence :} Étape 3 du scénario nominal
+
+\begin{enumerate}[leftmargin=*]
+    \item L'utilisateur constate une différence (montant manquant, coupures incorrectes)
+    \item L'utilisateur décoche "Conforme ?"
+    \item Le champ "Raison de non-conformité" devient obligatoire
+    \item L'utilisateur saisit une description détaillée du problème
+    \item L'utilisateur ajoute des notes si nécessaire
+    \item L'utilisateur clique sur "Recevoir avec réserve"
+    \item Le système valide la présence de la raison
+    \item Le système met à jour status → COMPLETED\_WITH\_ISSUES
+    \item Le système enregistre nonConformityReason, receivedAt, receivedBy
+    \item Le système crée un ActionLog avec flag problème
+    \item Le système envoie des alertes (Caisse Centrale, Tunisie Sécurité, Admin)
+    \item Le système affiche un message d'avertissement
+    \item Une investigation peut être déclenchée
+\end{enumerate}
+
+\subsection{Diagramme de Séquence - Dispatch}
+
+La figure \ref{fig:sequence-dispatch} illustre le processus de dispatch.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{sequence-dispatch.png}
+    \caption{Diagramme de séquence - Dispatch}
+    \label{fig:sequence-dispatch}
+\end{figure}
+
+\subsection{Diagramme de Séquence - Réception}
+
+La figure \ref{fig:sequence-receive} montre le processus de réception avec gestion de conformité.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{sequence-receive.png}
+    \caption{Diagramme de séquence - Réception}
+    \label{fig:sequence-receive}
+\end{figure}
+
+\subsection{Diagramme d'Activités - Flux Réception}
+
+La figure \ref{fig:activity-reception} présente le flux décisionnel de réception.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{activity-reception.png}
+    \caption{Diagramme d'activités - Flux de réception}
+    \label{fig:activity-reception}
+\end{figure}
+
+Le flux inclut la vérification de conformité et les chemins alternatifs selon le résultat.
+
+\subsection{Spécifications Analytics}
+
+\subsubsection{KPIs à Afficher}
+
+\begin{enumerate}[leftmargin=*]
+    \item \textbf{Nombre total de demandes} : Compteur global avec trend
+    \item \textbf{Montant total transité} : Somme en DT avec trend
+    \item \textbf{Demandes en cours} : Nombre de demandes non finalisées
+    \item \textbf{Délai moyen de traitement} : Temps moyen de SUBMITTED à RECEIVED (en jours)
+    \item \textbf{Taux de rejet} : Pourcentage de demandes rejetées
+    \item \textbf{Taux de non-conformité} : Pourcentage de réceptions avec problèmes
+\end{enumerate}
+
+\subsubsection{Graphiques}
+
+\begin{enumerate}[leftmargin=*]
+    \item \textbf{Pie Chart - Demandes par Statut} :
+    \begin{itemize}
+        \item Segments colorés par statut
+        \item Labels avec nombres et pourcentages
+        \item Légende interactive
+    \end{itemize}
+    
+    \item \textbf{Bar Chart - Demandes par Agence} :
+    \begin{itemize}
+        \item Top 10 agences par volume
+        \item Axe secondaire pour montant total
+        \item Tri décroissant
+    \end{itemize}
+    
+    \item \textbf{Line Chart - Évolution Temporelle} :
+    \begin{itemize}
+        \item Nombre de demandes par jour/semaine/mois
+        \item Ligne de tendance
+        \item Zoom et pan
+    \end{itemize}
+    
+    \item \textbf{Bar Chart - Délais par Étape} :
+    \begin{itemize}
+        \item Temps moyen : SUBMITTED→VALIDATED, VALIDATED→ASSIGNED, etc.
+        \item Identification des goulots d'étranglement
+    \end{itemize}
+\end{enumerate}
+
+\subsubsection{Tables Agrégées}
+
+\begin{enumerate}[leftmargin=*]
+    \item \textbf{Top Agences} :
+    \begin{itemize}
+        \item Colonnes : Nom, Nombre demandes, Montant total, Taux rejet
+        \item Tri par volume
+    \end{itemize}
+    
+    \item \textbf{Demandes Récentes} :
+    \begin{itemize}
+        \item Dernières 10 demandes
+        \item Colonnes : Numéro, Agence, Montant, Statut, Date
+    \end{itemize}
+\end{enumerate}
+
+\subsubsection{Filtres Analytics}
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Plage de dates} : Date picker range (de - à)
+    \item \textbf{Agences} : Multi-select agences
+    \item \textbf{Statuts} : Multi-select statuts
+    \item \textbf{Type} : Provisionnement / Versement / Tous
+    \item \textbf{Bouton "Actualiser"} : Recharge les données
+\end{itemize}
+
+\section{Conception Détaillée}
+
+\subsection{Architecture Composants Frontend}
+
+Structure des composants analytics :
+
+\begin{verbatim}
+components/dashboard/
+├── request-stats-chart.tsx        # Pie chart statuts
+├── agency-volume-chart.tsx        # Bar chart agences
+├── timeline-chart.tsx             # Line chart évolution
+├── analytics-kpi-cards.tsx        # Cartes KPIs
+├── analytics-table.tsx            # Tables données
+└── analytics-filters.tsx          # Filtres
+
+app/admin/analytics/
+└── page.tsx                       # Page dashboard admin
+\end{verbatim}
+
+\subsection{Routes API}
+
+\begin{description}[leftmargin=*]
+    \item[\texttt{POST /api/requests/[id]/dispatch}] : Confirmation dispatch
+    \begin{itemize}
+        \item Authorization: TunisieSécurité uniquement
+        \item Body: \texttt{\{\}}
+        \item Retourne: Request avec status=DISPATCHED
+    \end{itemize}
+    
+    \item[\texttt{POST /api/requests/[id]/receive}] : Confirmation réception
+    \begin{itemize}
+        \item Authorization: Agence uniquement (sa propre demande)
+        \item Body: \texttt{\{ conforme: boolean, nonConformityReason?: string, notes?: string \}}
+        \item Validation: Si conforme=false, raison obligatoire
+        \item Retourne: Request avec status=RECEIVED ou COMPLETED\_WITH\_ISSUES
+    \end{itemize}
+    
+    \item[\texttt{GET /api/analytics/summary}] : KPIs globaux
+    \begin{itemize}
+        \item Query: dateFrom, dateTo, agencyIds[], statuses[]
+        \item Retourne: \texttt{\{ totalRequests, totalAmount, averageDelay, rejectionRate, nonConformityRate \}}
+    \end{itemize}
+    
+    \item[\texttt{GET /api/analytics/by-status}] : Distribution par statut
+    \begin{itemize}
+        \item Retourne: \texttt{[\{ status, count \}]}
+    \end{itemize}
+    
+    \item[\texttt{GET /api/analytics/by-agency}] : Agrégation par agence
+    \begin{itemize}
+        \item Retourne: \texttt{[\{ agencyName, count, totalAmount, rejectionRate \}]}
+    \end{itemize}
+    
+    \item[\texttt{GET /api/analytics/timeline}] : Évolution temporelle
+    \begin{itemize}
+        \item Query: granularity (day|week|month)
+        \item Retourne: \texttt{[\{ date, count, amount \}]}
+    \end{itemize}
+    
+    \item[\texttt{GET /api/analytics/export}] : Export données
+    \begin{itemize}
+        \item Query: format (excel|pdf), filters
+        \item Retourne: File download
+    \end{itemize}
+\end{description}
+
+\subsection{Calculs KPIs (Backend)}
+
+Requêtes Prisma pour les KPIs :
+
+\begin{lstlisting}[language=JavaScript]
+// Nombre total
+const totalRequests = await prisma.request.count({
+  where: { createdAt: { gte: dateFrom, lte: dateTo } }
+});
+
+// Montant total
+const { _sum } = await prisma.request.aggregate({
+  _sum: { totalAmount: true },
+  where: { createdAt: { gte: dateFrom, lte: dateTo } }
+});
+
+// Delai moyen (en jours)
+const completedRequests = await prisma.request.findMany({
+  where: {
+    status: { in: ['RECEIVED', 'COMPLETED_WITH_ISSUES'] },
+    receivedAt: { not: null }
+  },
+  select: { createdAt: true, receivedAt: true }
+});
+
+const averageDelay = completedRequests.reduce((sum, req) => {
+  const delay = (req.receivedAt - req.createdAt) / (1000 * 60 * 60 * 24);
+  return sum + delay;
+}, 0) / completedRequests.length;
+
+// Taux de rejet
+const rejectedCount = await prisma.request.count({
+  where: { status: 'REJECTED' }
+});
+const rejectionRate = (rejectedCount / totalRequests) * 100;
+
+// Taux non-conformite
+const nonConformCount = await prisma.request.count({
+  where: { status: 'COMPLETED_WITH_ISSUES' }
+});
+const nonConformityRate = (nonConformCount / completedRequests.length) * 100;
+\end{lstlisting}
+
+\section{Réalisation - Implémentation}
+
+\subsection{Dialog Dispatch}
+
+Simple dialog de confirmation :
+
+\begin{itemize}[leftmargin=*]
+    \item Header : "Confirmer le dispatch"
+    \item Body :
+    \begin{itemize}
+        \item Numéro de demande
+        \item Agence destination
+        \item Équipe assignée (Chauffeur + Garde)
+        \item Montant à transporter
+    \end{itemize}
+    \item Question : "Confirmez-vous le départ de l'équipe ?"
+    \item Actions : "Confirmer" (bleu), "Annuler"
+    \item Toast succès après dispatch
+\end{itemize}
+
+\subsection{Dialog Réception}
+
+Dialog avec formulaire conditionnel :
+
+\begin{itemize}[leftmargin=*]
+    \item Header : "Recevoir la demande"
+    \item Body : Résumé (numéro, équipe, montant attendu)
+    \item Form :
+    \begin{itemize}
+        \item Checkbox "La livraison est conforme" (checked)
+        \item Textarea "Raison de non-conformité" (hidden si conforme, required si non-conforme)
+        \item Textarea "Notes additionnelles" (optionnel, toujours visible)
+    \end{itemize}
+    \item Logic : onChange du checkbox toggle required sur raison
+    \item Actions : "Recevoir" (vert si conforme, orange si non-conforme), "Annuler"
+    \item Toast succès (vert) ou warning (orange) selon conformité
+\end{itemize}
+
+\subsection{Page Dashboard Analytics}
+
+Layout de la page :
+
+\begin{enumerate}[leftmargin=*]
+    \item \textbf{Header} :
+    \begin{itemize}
+        \item Titre "Analytics - Tableau de Bord"
+        \item Bouton "Exporter" avec dropdown (Excel, PDF)
+    \end{itemize}
+    
+    \item \textbf{Section Filtres} :
+    \begin{itemize}
+        \item Date range picker (par défaut : 30 derniers jours)
+        \item Multi-select agences
+        \item Multi-select statuts
+        \item Bouton "Appliquer filtres"
+    \end{itemize}
+    
+    \item \textbf{Section KPIs} (grille 3 colonnes) :
+    \begin{itemize}
+        \item Card "Demandes totales" avec icône et trend
+        \item Card "Montant total" formaté
+        \item Card "En cours" avec badge
+        \item Card "Délai moyen" en jours
+        \item Card "Taux rejet" en pourcentage
+        \item Card "Non-conformité" en pourcentage
+    \end{itemize}
+    
+    \item \textbf{Section Graphiques} (grille 2 colonnes) :
+    \begin{itemize}
+        \item Pie chart demandes par statut
+        \item Bar chart demandes par agence
+        \item Line chart évolution temporelle (pleine largeur)
+    \end{itemize}
+    
+    \item \textbf{Section Tables} :
+    \begin{itemize}
+        \item Table "Top 10 Agences"
+        \item Table "Demandes Récentes"
+    \end{itemize}
+\end{enumerate}
+
+\subsection{Composant KPI Card}
+
+Structure d'une carte KPI :
+
+\begin{lstlisting}[language=JavaScript]
+interface KPICardProps {
+  title: string;
+  value: number | string;
+  icon: ReactNode;
+  trend?: { value: number; direction: 'up' | 'down' };
+  format?: 'number' | 'currency' | 'percentage';
+}
+
+function KPICard({ title, value, icon, trend, format }: KPICardProps) {
+  const formattedValue = formatValue(value, format);
+  
+  return (
+    <Card>
+      <div className="flex items-center justify-between">
+        <div>
+          <p className="text-sm text-gray-500">{title}</p>
+          <p className="text-3xl font-bold">{formattedValue}</p>
+          {trend && (
+            <p className={`text-sm ${trend.direction === 'up' ? 'text-green-600' : 'text-red-600'}`}>
+              {trend.direction === 'up' ? '↑' : '↓'} {Math.abs(trend.value)}%
+            </p>
+          )}
+        </div>
+        <div className="text-4xl text-blue-500">{icon}</div>
+      </div>
+    </Card>
+  );
+}
+\end{lstlisting}
+
+\subsection{Charts avec Recharts}
+
+Implémentation des graphiques avec la bibliothèque Recharts :
+
+\begin{lstlisting}[language=JavaScript]
+import { PieChart, Pie, Cell, BarChart, Bar, LineChart, Line } from 'recharts';
+
+// Pie Chart Statuts
+function RequestStatsChart({ data }) {
+  const COLORS = {
+    SUBMITTED: '#3b82f6',
+    VALIDATED: '#10b981',
+    REJECTED: '#ef4444',
+    ASSIGNED: '#f59e0b',
+    DISPATCHED: '#8b5cf6',
+    RECEIVED: '#06b6d4',
+  };
+  
+  return (
+    <PieChart width={400} height={300}>
+      <Pie
+        data={data}
+        dataKey="count"
+        nameKey="status"
+        cx="50%"
+        cy="50%"
+        outerRadius={100}
+        label
+      >
+        {data.map((entry, index) => (
+          <Cell key={index} fill={COLORS[entry.status]} />
+        ))}
+      </Pie>
+      <Tooltip />
+      <Legend />
+    </PieChart>
+  );
+}
+\end{lstlisting}
+
+\subsection{État Zustand - Analytics Store}
+
+\begin{lstlisting}[language=JavaScript]
+interface AnalyticsState {
+  stats: AnalyticsSummary | null;
+  filters: {
+    dateFrom: Date;
+    dateTo: Date;
+    agencyIds: number[];
+    statuses: string[];
+  };
+  loading: boolean;
+  setStats: (stats: AnalyticsSummary) => void;
+  setFilters: (filters: Partial<FilterState>) => void;
+  setLoading: (loading: boolean) => void;
+}
+
+export const useAnalyticsStore = create<AnalyticsState>((set) => ({
+  stats: null,
+  filters: {
+    dateFrom: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000), // 30 jours
+    dateTo: new Date(),
+    agencyIds: [],
+    statuses: [],
+  },
+  loading: false,
+  setStats: (stats) => set({ stats }),
+  setFilters: (newFilters) =>
+    set((state) => ({
+      filters: { ...state.filters, ...newFilters }
+    })),
+  setLoading: (loading) => set({ loading }),
+}));
+\end{lstlisting}
+
+\section{Tests et Validation}
+
+\subsection{Tests Fonctionnels}
+
+\subsubsection{Dispatch}
+
+\begin{itemize}[leftmargin=*]
+    \item [\checkmark] Dispatch change statut ASSIGNED → DISPATCHED
+    \item [\checkmark] Timestamp et utilisateur enregistrés
+    \item [\checkmark] Seul TunisieSécurité peut dispatcher
+    \item [\checkmark] Notification envoyée à agence
+\end{itemize}
+
+\subsubsection{Réception}
+
+\begin{itemize}[leftmargin=*]
+    \item [\checkmark] Réception conforme crée RECEIVED
+    \item [\checkmark] Réception non-conforme crée COMPLETED\_WITH\_ISSUES
+    \item [\checkmark] Raison obligatoire si non-conforme
+    \item [\checkmark] Seule l'agence concernée peut recevoir
+    \item [\checkmark] Alertes envoyées si problème
+\end{itemize}
+
+\subsubsection{Analytics}
+
+\begin{itemize}[leftmargin=*]
+    \item [\checkmark] KPIs calculés correctement
+    \item [\checkmark] Graphiques affichent données réelles
+    \item [\checkmark] Filtres modifient les résultats
+    \item [\checkmark] Export Excel génère fichier
+    \item [\checkmark] Performance acceptable (<2s chargement)
+\end{itemize}
+
+\subsection{Tests d'Intégration End-to-End}
+
+Test du cycle complet :
+
+\begin{enumerate}[leftmargin=*]
+    \item Agence crée demande → SUBMITTED
+    \item Caisse Centrale valide → VALIDATED
+    \item Tunisie Sécurité assigne équipe → ASSIGNED
+    \item Tunisie Sécurité dispatche → DISPATCHED
+    \item Agence reçoit → RECEIVED
+    \item Vérification : Tous les logs présents, timeline complète
+    \item Analytics : Demande apparaît dans statistiques
+\end{enumerate}
+
+\begin{itemize}[leftmargin=*]
+    \item [\checkmark] Cycle complet sans erreur
+    \item [\checkmark] Toutes les transitions valides
+    \item [\checkmark] Logs chronologiques corrects
+    \item [\checkmark] Analytics à jour
+\end{itemize}
+
+\section{Revue de Sprint}
+
+\subsection{Démonstration Finale}
+
+Démonstration complète au Product Owner :
+
+\begin{enumerate}[leftmargin=*]
+    \item Workflow end-to-end : Création → Validation → Assignment → Dispatch → Réception
+    \item Gestion de non-conformité : Réception avec problème
+    \item Dashboard analytics : Présentation de tous les KPIs et graphiques
+    \item Filtrage analytics par période et agence
+    \item Export Excel des données
+    \item Timeline complète d'une demande avec tous les logs
+\end{enumerate}
+
+\subsection{Validation Product Owner}
+
+Points validés :
+
+\begin{itemize}[leftmargin=*]
+    \item Système complet et opérationnel
+    \item Cycle de vie des demandes fluide
+    \item Analytics riches et pertinents
+    \item Interface intuitive pour tous les rôles
+    \item Performance satisfaisante
+    \item Sécurité et traçabilité assurées
+\end{itemize}
+
+\subsection{Feedback}
+
+Suggestions pour évolutions futures :
+
+\begin{itemize}[leftmargin=*]
+    \item Notifications push en temps réel (WebSockets)
+    \item Export PDF avec graphiques inclus
+    \item Module de reporting avancé (rapports programmés)
+    \item Application mobile pour consultation
+    \item Signature électronique pour réception
+\end{itemize}
+
+\subsection{Métriques du Sprint}
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Durée} : 2 semaines
+    \item \textbf{User Stories complétées} : 5/5 (100\%)
+    \item \textbf{Points de complexité} : 28/28
+    \item \textbf{Bugs identifiés} : 3 (tous résolus)
+    \item \textbf{Performance} : < 2s chargement analytics
+\end{itemize}
+
+\subsection{Métriques Globales du Projet}
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Durée totale} : 10 semaines (4 sprints)
+    \item \textbf{User Stories totales} : 24/24 (100\%)
+    \item \textbf{Points de complexité} : 117/117
+    \item \textbf{Lignes de code} : ~8,500 (frontend + backend)
+    \item \textbf{Tests} : Coverage manuel complet
+    \item \textbf{Bugs résolus} : 15/15
+\end{itemize}
+
+\section{Conclusion du Chapitre}
+
+Le Sprint 4 a permis de finaliser le système avec l'implémentation des étapes finales du cycle de traitement (dispatch et réception) et le développement d'un module analytics complet. Le système est désormais opérationnel de bout en bout, couvrant l'intégralité du processus de gestion des fonds bancaires.
+
+Le module analytics offre aux décideurs une visibilité stratégique sur les opérations, avec des KPIs pertinents, des visualisations graphiques et des capacités de filtrage et d'export. Cette transparence facilite l'identification des goulots d'étranglement et l'optimisation continue des processus.
+
+La gestion des non-conformités garantit que les problèmes sont tracés et remontés aux bonnes personnes, permettant une résolution rapide et une amélioration continue de la qualité de service.
+
+Le projet atteint maintenant sa phase de conclusion, où nous synthétisons les réalisations, les compétences acquises et les perspectives d'évolution du système.
+
+\newpage

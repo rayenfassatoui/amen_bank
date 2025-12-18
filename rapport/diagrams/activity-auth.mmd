@@ -1,0 +1,31 @@
+flowchart TD
+    Start([Utilisateur visite app])
+    CheckAuth{Utilisateur<br/>authentifié?}
+    RedirectLogin[Redirection page login]
+    ShowLogin[Afficher formulaire]
+    SubmitCred[Soumettre credentials]
+    VerifyCred{Credentials<br/>valides?}
+    GenerateJWT[Générer JWT token]
+    AccessDash[Accès dashboard]
+    ShowDash{Rôle<br/>utilisateur?}
+    DashAdmin[Dashboard Admin]
+    DashAgence[Dashboard Agence]
+    DashCC[Dashboard Caisse Centrale]
+    DashTS[Dashboard Tunisie Sécurité]
+    Error[Message erreur]
+    
+    Start --> CheckAuth
+    CheckAuth -->|NON| RedirectLogin
+    CheckAuth -->|OUI| AccessDash
+    RedirectLogin --> ShowLogin
+    ShowLogin --> SubmitCred
+    SubmitCred --> VerifyCred
+    VerifyCred -->|OUI| GenerateJWT
+    VerifyCred -->|NON| Error
+    GenerateJWT --> AccessDash
+    Error --> ShowLogin
+    AccessDash --> ShowDash
+    ShowDash -->|Admin| DashAdmin
+    ShowDash -->|Agence| DashAgence
+    ShowDash -->|Caisse Centrale| DashCC
+    ShowDash -->|Tunisie Sécurité| DashTS

@@ -1,0 +1,454 @@
+\chapter{État de l'Art et Technologies}
+
+\section{Introduction}
+
+Ce chapitre présente le contexte académique et technologique de notre projet. Nous commençons par exposer les concepts métiers essentiels à la compréhension du domaine bancaire, notamment la gestion de trésorerie et les workflows d'approbation. Nous détaillons ensuite la pile technologique retenue, en justifiant chaque choix technique par rapport aux alternatives disponibles.
+
+\section{Concepts Métiers Bancaires}
+
+\subsection{Gestion de Trésorerie}
+
+La gestion de trésorerie (ou Cash Management) est une fonction critique dans le secteur bancaire. Elle consiste à optimiser les flux de liquidités pour garantir que chaque point de vente dispose des fonds nécessaires à son activité quotidienne, tout en minimisant les coûts de détention de cash et les risques associés.
+
+\subsubsection{Enjeux de la Trésorerie Bancaire}
+
+Les principaux enjeux incluent :
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Liquidité} : Assurer la disponibilité des fonds pour répondre aux demandes de retrait des clients
+    \item \textbf{Sécurité} : Minimiser les risques de vol, perte ou erreur lors des transports de fonds
+    \item \textbf{Optimisation} : Réduire les coûts liés au transport, à la détention et à la gestion du cash
+    \item \textbf{Conformité} : Respecter les réglementations bancaires en matière de traçabilité et de reporting
+\end{itemize}
+
+\subsubsection{Mouvements de Fonds Inter-Agences}
+
+Dans un réseau bancaire multi-agences, les mouvements de fonds entre entités sont quotidiens. Une agence peut avoir un excédent de liquidités qu'elle doit reverser à la Caisse Centrale, ou au contraire un besoin de provisionnement pour faire face aux demandes de ses clients.
+
+\subsection{Types de Mouvements}
+
+Notre système gère deux types principaux de mouvements de fonds :
+
+\subsubsection{Provisionnement (Remittance)}
+
+Le provisionnement correspond à l'envoi de fonds d'une agence vers la Caisse Centrale. Ce type de mouvement intervient lorsque :
+
+\begin{itemize}[leftmargin=*]
+    \item L'agence accumule un excédent de liquidités supérieur à son seuil de sécurité
+    \item L'agence souhaite sécuriser les fonds collectés en fin de journée
+    \item La Caisse Centrale demande une remontée de fonds pour rééquilibrer la trésorerie globale
+\end{itemize}
+
+\textbf{Exemple :} L'Agence Tunis Centre a collecté 500,000 DT suite à des dépôts clients importants. Elle crée une demande de provisionnement pour transférer ce montant à la Caisse Centrale.
+
+\subsubsection{Versement (Cash Supply)}
+
+Le versement correspond à l'envoi de fonds de la Caisse Centrale vers une agence. Ce type de mouvement intervient lorsque :
+
+\begin{itemize}[leftmargin=*]
+    \item L'agence anticipe des besoins importants (période de fêtes, salaires)
+    \item Le niveau de liquidité de l'agence est tombé en dessous du seuil minimal
+    \item L'agence a besoin de coupures spécifiques (billets de petite dénomination)
+\end{itemize}
+
+\textbf{Exemple :} L'Agence Sousse prévoit des retraits massifs en période d'Aïd. Elle demande un versement de 300,000 DT avec une répartition spécifique en billets de 20 DT et 50 DT.
+
+\subsection{Workflow d'Approbation Multiniveaux}
+
+Le traitement d'une demande de fonds suit un workflow complexe impliquant plusieurs acteurs et étapes de validation. Ce processus garantit la sécurité et la traçabilité des opérations.
+
+\subsubsection{Étapes du Workflow}
+
+Le cycle complet comprend cinq étapes principales :
+
+\begin{enumerate}[leftmargin=*]
+    \item \textbf{SUBMITTED} : L'agence soumet une demande avec les détails (montant, coupures)
+    \item \textbf{VALIDATED/REJECTED} : La Caisse Centrale examine et valide ou rejette la demande
+    \item \textbf{ASSIGNED} : Tunisie Sécurité assigne une équipe (chauffeur + garde)
+    \item \textbf{DISPATCHED} : Tunisie Sécurité confirme le départ de l'équipe avec les fonds
+    \item \textbf{RECEIVED/COMPLETED} : L'agence confirme la réception des fonds
+\end{enumerate}
+
+\subsubsection{Acteurs et Responsabilités}
+
+\begin{description}[leftmargin=*]
+    \item[Agence] : Initie la demande, spécifie les besoins, confirme la réception
+    \item[Caisse Centrale] : Valide la pertinence de la demande, vérifie la disponibilité des fonds
+    \item[Tunisie Sécurité] : Assigne les ressources logistiques, coordonne le transport
+    \item[Système] : Enregistre chaque action, notifie les parties prenantes, assure la traçabilité
+\end{description}
+
+\subsubsection{Diagramme de Flux des États}
+
+La figure \ref{fig:workflow-etats} illustre les transitions d'états possibles d'une demande dans le système.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{workflow-etats.png}
+    \caption{Diagramme des transitions d'états d'une demande}
+    \label{fig:workflow-etats}
+\end{figure}
+
+Ce diagramme montre clairement les chemins possibles : une demande peut être rejetée à l'étape de validation, ou suivre le parcours complet jusqu'à la réception. Chaque transition est tracée avec identification de l'acteur et horodatage.
+
+\subsection{Traçabilité et Audit Trail}
+
+La traçabilité est un requirement critique pour les systèmes bancaires. Elle permet de :
+
+\begin{itemize}[leftmargin=*]
+    \item Reconstituer l'historique complet de chaque opération
+    \item Identifier les responsabilités en cas d'incident
+    \item Répondre aux exigences réglementaires d'audit
+    \item Détecter les anomalies et les tentatives de fraude
+\end{itemize}
+
+\subsubsection{Éléments Tracés}
+
+Pour chaque action effectuée sur une demande, le système enregistre :
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Qui ?} Identification de l'utilisateur ayant effectué l'action
+    \item \textbf{Quoi ?} Type d'action (validation, rejet, assignment, dispatch, réception)
+    \item \textbf{Quand ?} Horodatage précis (date et heure)
+    \item \textbf{Détails ?} Informations spécifiques (motif de rejet, équipe assignée, notes)
+\end{itemize}
+
+\section{Pile Technologique}
+
+\subsection{Architecture Générale}
+
+\subsubsection{Pattern Architectural}
+
+Nous avons opté pour une architecture \textbf{full-stack JavaScript/TypeScript} basée sur Next.js, qui unifie le frontend et le backend dans un seul framework. Cette approche présente plusieurs avantages :
+
+\begin{itemize}[leftmargin=*]
+    \item Réduction de la complexité (un seul langage, une seule codebase)
+    \item Partage de code entre client et serveur (types, validations, utilitaires)
+    \item Performances optimisées grâce au Server-Side Rendering (SSR)
+    \item Déploiement simplifié sur plateformes serverless
+\end{itemize}
+
+\subsubsection{Architecture Trois Tiers}
+
+Malgré l'unification du frontend et backend, l'application respecte une séparation claire en trois couches :
+
+\begin{description}[leftmargin=*]
+    \item[Couche Présentation] : Composants React (Server Components et Client Components), interfaces utilisateur, gestion de l'état client
+    
+    \item[Couche Logique Métier] : API Routes Next.js, contrôleurs, services métier, validations, authentification/autorisation
+    
+    \item[Couche Données] : PostgreSQL via Prisma ORM, gestion des transactions, migrations de schéma
+\end{description}
+
+\subsubsection{Architecture Serverless}
+
+Le déploiement cible une architecture serverless sur Vercel pour le frontend et les API Routes, avec PostgreSQL hébergé sur Neon (cloud database). Les avantages incluent :
+
+\begin{itemize}[leftmargin=*]
+    \item Scalabilité automatique selon la charge
+    \item Pas de gestion d'infrastructure
+    \item Coûts réduits (facturation à l'usage)
+    \item Haute disponibilité par défaut
+\end{itemize}
+
+\subsection{Technologies Frontend}
+
+\subsubsection{Next.js 15}
+
+Next.js est un framework React full-stack développé par Vercel. La version 15 apporte plusieurs innovations majeures :
+
+\textbf{App Router} : Nouveau système de routing basé sur le système de fichiers avec support natif des layouts et des Server Components.
+
+\textbf{Server Components} : Composants React exécutés côté serveur, réduisant la taille du bundle JavaScript envoyé au client et améliorant les performances.
+
+\textbf{API Routes intégrées} : Possibilité de créer des endpoints API directement dans le projet Next.js, sans serveur backend séparé.
+
+\textbf{Optimisations automatiques} : Minification, tree-shaking, code splitting, prefetching automatique.
+
+\subsubsection{TypeScript}
+
+TypeScript est un sur-ensemble typé de JavaScript qui apporte :
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Type-safety} : Détection d'erreurs à la compilation plutôt qu'à l'exécution
+    \item \textbf{IntelliSense} : Autocomplétion et documentation inline dans l'IDE
+    \item \textbf{Refactoring sûr} : Les modifications sont propagées avec garantie de cohérence
+    \item \textbf{Maintenabilité} : Code plus explicite et auto-documenté
+\end{itemize}
+
+\subsubsection{Tailwind CSS et Radix UI}
+
+\textbf{Tailwind CSS} est un framework CSS utility-first qui permet de construire rapidement des interfaces modernes sans écrire de CSS personnalisé. Les classes utilitaires sont composables et offrent une cohérence de design.
+
+\textbf{Radix UI} (via shadcn/ui) fournit des composants UI accessibles et non stylisés de base, que nous personnalisons avec Tailwind. Les composants incluent : Button, Dialog, Select, Table, Input, etc.
+
+\subsubsection{Zustand}
+
+Zustand est une bibliothèque de gestion d'état client minimaliste. Comparé à Redux :
+
+\begin{itemize}[leftmargin=*]
+    \item API plus simple (moins de boilerplate)
+    \item Taille réduite (1KB vs 3KB pour Redux)
+    \item Pas de Provider wrapper nécessaire
+    \item Performance optimisée avec re-renders minimaux
+\end{itemize}
+
+\subsubsection{Zod}
+
+Zod est une bibliothèque de validation de schémas TypeScript-first. Elle permet de :
+
+\begin{itemize}[leftmargin=*]
+    \item Définir des schémas de validation réutilisables
+    \item Générer automatiquement des types TypeScript à partir des schémas
+    \item Valider les données entrantes (formulaires, API requests)
+    \item Produire des messages d'erreur clairs et personnalisables
+\end{itemize}
+
+\subsection{Technologies Backend}
+
+\subsubsection{Node.js 18+}
+
+Node.js est l'environnement d'exécution JavaScript côté serveur. La version 18 LTS apporte :
+
+\begin{itemize}[leftmargin=*]
+    \item Support natif de Fetch API
+    \item Amélioration des performances V8
+    \item Stabilité et support à long terme
+\end{itemize}
+
+\subsubsection{Next.js API Routes}
+
+Au lieu d'utiliser Express.js ou un autre framework backend séparé, nous utilisons les API Routes de Next.js. Chaque fichier dans le dossier \texttt{app/api/} devient automatiquement un endpoint HTTP.
+
+\textbf{Exemple :}
+\begin{lstlisting}[language=JavaScript]
+// app/api/requests/route.ts
+export async function GET(request: Request) {
+  const requests = await prisma.request.findMany();
+  return Response.json(requests);
+}
+\end{lstlisting}
+
+\subsubsection{PostgreSQL}
+
+PostgreSQL est un SGBD relationnel open-source reconnu pour :
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Robustesse} : Support complet des transactions ACID
+    \item \textbf{Richesse fonctionnelle} : JSON, full-text search, contraintes complexes
+    \item \textbf{Performance} : Optimisations avancées, indexation efficace
+    \item \textbf{Extensibilité} : Types personnalisés, fonctions, triggers
+\end{itemize}
+
+Pour notre projet, PostgreSQL garantit l'intégrité des données critiques (montants, statuts, équipes) et supporte les transactions nécessaires pour les opérations composées.
+
+\subsubsection{Prisma ORM}
+
+Prisma est un ORM moderne qui révolutionne l'accès aux données en TypeScript. Ses caractéristiques clés :
+
+\textbf{Schema-first} : Le schéma de base de données est défini dans un fichier \texttt{schema.prisma} déclaratif.
+
+\textbf{Génération de types} : Prisma génère automatiquement des types TypeScript correspondant exactement au schéma.
+
+\textbf{Migrations} : Système de migrations automatisé pour faire évoluer le schéma en production.
+
+\textbf{Prisma Studio} : Interface graphique pour explorer et modifier les données en développement.
+
+\textbf{Query API} : API fluide et type-safe pour construire des requêtes complexes.
+
+\textbf{Exemple :}
+\begin{lstlisting}[language=JavaScript]
+const request = await prisma.request.create({
+  data: {
+    type: "PROVISIONING",
+    totalAmount: 500000,
+    agencyId: 1,
+    denominations: {
+      create: [
+        { denomination: 100, quantity: 3000 },
+        { denomination: 50, quantity: 4000 }
+      ]
+    }
+  },
+  include: { denominations: true }
+});
+\end{lstlisting}
+
+\subsubsection{NextAuth.js}
+
+NextAuth.js est la solution d'authentification standard pour Next.js. Elle fournit :
+
+\begin{itemize}[leftmargin=*]
+    \item Support de multiples providers (OAuth, credentials, email magic links)
+    \item Gestion sécurisée des sessions (JWT ou database sessions)
+    \item Callbacks personnalisables pour enrichir les tokens
+    \item Protection CSRF intégrée
+    \item Hooks React pour accéder à la session
+\end{itemize}
+
+Pour notre projet, nous utilisons le \textbf{Credentials Provider} avec authentification par email/mot de passe. Les sessions sont gérées via JWT stockés dans des cookies HTTP-only sécurisés.
+
+\subsection{Sécurité}
+
+\subsubsection{Hashing des Mots de Passe : bcrypt}
+
+Les mots de passe ne sont jamais stockés en clair. Nous utilisons \textbf{bcrypt} pour le hashing, avec un salt factor de 12 rounds. Bcrypt est résistant aux attaques par force brute grâce à sa lenteur intentionnelle.
+
+\begin{lstlisting}[language=JavaScript]
+import bcrypt from 'bcryptjs';
+
+// Lors de la creation d'utilisateur
+const hashedPassword = await bcrypt.hash(password, 12);
+
+// Lors de la connexion
+const isValid = await bcrypt.compare(password, hashedPassword);
+\end{lstlisting}
+
+\subsubsection{JSON Web Tokens (JWT)}
+
+Les sessions utilisateur sont matérialisées par des JWT signés cryptographiquement. Le token contient :
+
+\begin{itemize}[leftmargin=*]
+    \item ID utilisateur
+    \item Rôle utilisateur
+    \item Agence (si applicable)
+    \item Date d'expiration
+\end{itemize}
+
+Les tokens ont une durée de vie limitée (24h) et sont automatiquement rafraîchis lors de l'activité utilisateur.
+
+\subsubsection{Middleware de Protection}
+
+Un middleware Next.js vérifie l'authentification et les autorisations sur chaque requête vers une route protégée :
+
+\begin{lstlisting}[language=JavaScript]
+export function middleware(request: NextRequest) {
+  const token = request.cookies.get('session-token');
+  
+  if (!token) {
+    return NextResponse.redirect('/login');
+  }
+  
+  // Verification du token et des permissions
+  // ...
+}
+\end{lstlisting}
+
+\subsubsection{RBAC : Role-Based Access Control}
+
+Le système implémente un contrôle d'accès fin basé sur quatre rôles :
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{ADMIN} : Accès complet, gestion des utilisateurs, analytics
+    \item \textbf{AGENCY} : Création et consultation de demandes, confirmation réception
+    \item \textbf{CENTRAL\_CASH} : Validation/rejet des demandes, vue globale
+    \item \textbf{SECURITY} : Assignment équipes, confirmation dispatch
+\end{itemize}
+
+Chaque endpoint API vérifie que l'utilisateur authentifié possède le rôle requis.
+
+\subsection{Outils de Développement}
+
+\subsubsection{Version Control : Git + GitHub}
+
+Git est utilisé pour le versionnement du code avec une stratégie de branching :
+
+\begin{itemize}[leftmargin=*]
+    \item \texttt{main} : Branche de production, toujours stable
+    \item \texttt{develop} : Branche d'intégration des fonctionnalités
+    \item \texttt{feature/*} : Branches de développement pour chaque user story
+\end{itemize}
+
+GitHub héberge le repository et facilite la revue de code et la documentation.
+
+\subsubsection{IDE : Visual Studio Code}
+
+VS Code est l'éditeur principal avec extensions essentielles :
+
+\begin{itemize}[leftmargin=*]
+    \item Prisma (syntax highlighting pour schema.prisma)
+    \item ESLint (linting JavaScript/TypeScript)
+    \item Prettier (formatage automatique du code)
+    \item Tailwind CSS IntelliSense (autocomplétion classes CSS)
+\end{itemize}
+
+\subsubsection{Gestion BD : Prisma Studio}
+
+Prisma Studio est une interface web pour visualiser et manipuler les données pendant le développement. Lancé via \texttt{npx prisma studio}, il offre une vue tabulaire de toutes les tables avec possibilité de CRUD manuel.
+
+\subsubsection{API Testing : Postman}
+
+Postman est utilisé pour tester les endpoints API indépendamment du frontend. Nous maintenons une collection Postman documentée avec :
+
+\begin{itemize}[leftmargin=*]
+    \item Exemples de requêtes pour chaque endpoint
+    \item Variables d'environnement (dev, staging, prod)
+    \item Tests automatisés vérifiant les codes de statut et la structure des réponses
+\end{itemize}
+
+\subsubsection{Formatage et Linting}
+
+\textbf{Prettier} assure un formatage cohérent du code (indentation, guillemets, points-virgules).
+
+\textbf{ESLint} détecte les erreurs potentielles et enforce les bonnes pratiques :
+
+\begin{itemize}[leftmargin=*]
+    \item Variables non utilisées
+    \item Dépendances manquantes dans useEffect
+    \item Import de hooks React incorrects
+\end{itemize}
+
+\subsubsection{Package Manager}
+
+Nous utilisons \textbf{npm} (Node Package Manager) pour gérer les dépendances du projet. Le fichier \texttt{package.json} définit :
+
+\begin{itemize}[leftmargin=*]
+    \item Les dépendances de production (Next.js, Prisma, NextAuth, etc.)
+    \item Les dépendances de développement (TypeScript, ESLint, types)
+    \item Les scripts de build, développement et déploiement
+\end{itemize}
+
+\subsection{Tableau Comparatif des Technologies}
+
+Le tableau \ref{tab:tech-comparison} compare nos choix technologiques avec des alternatives courantes.
+
+\begin{table}[H]
+\centering
+\caption{Comparaison des choix technologiques}
+\label{tab:tech-comparison}
+\begin{tabular}{@{}llll@{}}
+\toprule
+\textbf{Aspect} & \textbf{Notre Choix} & \textbf{Alternative} & \textbf{Justification} \\ 
+\midrule
+Framework & Next.js 15 & Express + React & SSR natif, API Routes intégrées \\
+& & & Réduction complexité architecture \\
+\midrule
+Base de données & PostgreSQL & MongoDB & Transactionnalité ACID requise \\
+& & & Relations complexes entre entités \\
+\midrule
+ORM & Prisma & TypeORM & Type-safety excellente \\
+& & Sequelize & Migrations plus simples \\
+& & & Prisma Studio très pratique \\
+\midrule
+Authentification & NextAuth.js & Passport.js & Intégration parfaite Next.js \\
+& & JWT manual & Session management inclus \\
+\midrule
+État Client & Zustand & Redux & Légèreté (1KB vs 3KB) \\
+& & Context API & API plus simple, moins verbose \\
+\midrule
+Styling & Tailwind CSS & Material-UI & Flexibilité design \\
+& & Styled Comp. & Performance (pas de runtime) \\
+\midrule
+Validation & Zod & Yup & Intégration TypeScript native \\
+& & Joi & Inférence de types automatique \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Conclusion}
+
+Dans ce chapitre, nous avons présenté les fondements théoriques et techniques du projet. L'exploration des concepts métiers bancaires (gestion de trésorerie, workflows d'approbation, traçabilité) nous a permis de comprendre les exigences fonctionnelles du système. La présentation détaillée de la pile technologique a justifié nos choix architecturaux et techniques, en soulignant les avantages de chaque technologie retenue.
+
+Le prochain chapitre entame la phase de réalisation en décrivant le Sprint 1, consacré à la mise en place de l'architecture du système et du module d'authentification.
+
+\newpage

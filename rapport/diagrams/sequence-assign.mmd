@@ -1,0 +1,28 @@
+sequenceDiagram
+    actor TS as Tunisie Sécurité
+    participant UI as Frontend
+    participant API as API Requests
+    participant DB as Base Données
+    participant Notif as Notifications
+    
+    TS->>UI: Ouvre dialog assignment
+    TS->>UI: Sélectionne chauffeur
+    TS->>UI: Sélectionne transporteur
+    TS->>UI: Ajoute notes
+    TS->>UI: Soumet
+    UI->>API: POST /api/requests/[id]/assign-team
+    API->>API: Vérifier authz (TS role)
+    API->>DB: Vérifier status = VALIDATED
+    API->>API: Vérifier chauffeur ≠ transporteur
+    alt Assignment valide
+        API->>DB: UPDATE status=ASSIGNED
+        API->>DB: SET assignedDriver, assignedGuard
+        API->>DB: INSERT ActionLog
+        DB-->>API: Confirmé
+        API->>Notif: Notifier Agence + CC
+        API-->>UI: Request assignée
+        UI-->>TS: Toast succès
+    else Erreur validation
+        API-->>UI: Erreur 400
+        UI-->>TS: Message erreur
+    end

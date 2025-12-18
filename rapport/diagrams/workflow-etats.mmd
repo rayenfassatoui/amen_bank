@@ -1,0 +1,11 @@
+stateDiagram-v2
+    [*] --> SUBMITTED: Agence crée demande
+    SUBMITTED --> VALIDATED: Caisse Centrale valide
+    SUBMITTED --> REJECTED: Caisse Centrale rejette
+    VALIDATED --> ASSIGNED: Tunisie Sécurité assigne équipe
+    ASSIGNED --> DISPATCHED: Tunisie Sécurité dispatch
+    DISPATCHED --> RECEIVED: Agence reçoit (conforme)
+    DISPATCHED --> COMPLETED_WITH_ISSUES: Agence reçoit (non-conforme)
+    RECEIVED --> [*]
+    COMPLETED_WITH_ISSUES --> [*]
+    REJECTED --> [*]

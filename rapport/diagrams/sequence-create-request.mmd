@@ -1,0 +1,27 @@
+sequenceDiagram
+    actor Agence
+    participant UI as Frontend
+    participant API as API Requests
+    participant DB as Base Données
+    
+    Agence->>UI: Remplit formulaire demande
+    Agence->>UI: Ajoute denominations
+    UI->>UI: Calcule montant auto
+    Agence->>UI: Soumet formulaire
+    UI->>UI: Validation client (Zod)
+    UI->>API: POST /api/requests
+    API->>API: Validation serveur
+    API->>API: Vérifie montant = somme denominations
+    alt Montants correspondent
+        API->>API: Génère requestNumber
+        API->>DB: BEGIN TRANSACTION
+        API->>DB: INSERT Request
+        API->>DB: INSERT DenominationDetails
+        API->>DB: COMMIT
+        DB-->>API: Confirmé
+        API-->>UI: Request créée
+        UI-->>Agence: Succès + numéro demande
+    else Montants ne correspondent pas
+        API-->>UI: Erreur validation
+        UI-->>Agence: Message erreur
+    end

@@ -1,0 +1,30 @@
+flowchart TD
+    Start([Agence accède liste])
+    LoadReq[Charger demandes agence]
+    HasFilter{Appliquer<br/>filtres?}
+    FilterStatus[Filtrer par statut]
+    FilterDate[Filtrer par date]
+    FilterAmount[Filtrer par montant]
+    Search[Rechercher numéro]
+    Display[Afficher tableau paginé]
+    ClickReq{Utilisateur<br/>clique demande?}
+    ShowDetails[Afficher détails complets]
+    StayList[Rester sur liste]
+    End([Fin])
+    
+    Start --> LoadReq
+    LoadReq --> HasFilter
+    HasFilter -->|Statut| FilterStatus
+    HasFilter -->|Date| FilterDate
+    HasFilter -->|Montant| FilterAmount
+    HasFilter -->|Recherche| Search
+    HasFilter -->|Non| Display
+    FilterStatus --> Display
+    FilterDate --> Display
+    FilterAmount --> Display
+    Search --> Display
+    Display --> ClickReq
+    ClickReq -->|OUI| ShowDetails
+    ClickReq -->|NON| StayList
+    ShowDetails --> End
+    StayList --> End

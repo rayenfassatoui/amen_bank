@@ -1,0 +1,331 @@
+\chapter{Cadre Général du Projet}
+
+\section{Introduction}
+
+Ce premier chapitre pose les fondations de notre projet en présentant son contexte général. Nous commençons par une présentation détaillée d'Amen Bank, l'organisme d'accueil qui constitue le cadre de ce travail. Nous exposons ensuite le cadrage précis du projet, les résultats de l'étude de l'existant, et nous justifions nos choix méthodologiques pour le développement de la solution.
+
+\section{Présentation d'Amen Bank}
+
+\subsection{Historique et Position sur le Marché}
+
+Amen Bank est l'une des principales institutions bancaires tunisiennes, créée en 1967 sous la dénomination de \textit{Banque de Développement Économique de Tunisie} (BDET). Après plusieurs évolutions et restructurations, elle a adopté sa dénomination actuelle en 2005.
+
+Avec plus de 50 ans d'existence, Amen Bank s'est imposée comme un acteur majeur du secteur bancaire tunisien. La banque compte aujourd'hui :
+
+\begin{itemize}[leftmargin=*]
+    \item Plus de 180 agences réparties sur l'ensemble du territoire tunisien
+    \item Un réseau de plus de 200 distributeurs automatiques de billets (DAB)
+    \item Plus de 2000 collaborateurs
+    \item Une base de clientèle diversifiée (particuliers, professionnels, entreprises)
+\end{itemize}
+
+\subsection{Services Offerts}
+
+Amen Bank propose une gamme complète de produits et services bancaires :
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Banque des particuliers} : Comptes courants, épargne, crédits à la consommation, prêts immobiliers
+    \item \textbf{Banque des entreprises} : Crédits d'exploitation, financements d'investissements, commerce international
+    \item \textbf{Services de trésorerie} : Gestion des mouvements de fonds, transferts inter-agences
+    \item \textbf{Banque en ligne} : Services digitaux pour la consultation de comptes et les opérations à distance
+\end{itemize}
+
+\subsection{Structure Organisationnelle}
+
+La structure organisationnelle d'Amen Bank suit un modèle hiérarchique classique adapté aux besoins du secteur bancaire. La figure \ref{fig:organigramme} présente l'organigramme simplifié des entités concernées par notre projet.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{organigramme.png}
+    \caption{Organigramme simplifié d'Amen Bank}
+    \label{fig:organigramme}
+\end{figure}
+
+Les principales entités impliquées dans le système de gestion des fonds sont :
+
+\begin{description}[leftmargin=*]
+    \item[Direction Générale] : Définit la stratégie globale et supervise l'ensemble des opérations.
+    
+    \item[Caisse Centrale (Direction de la Trésorerie)] : Gère les liquidités de la banque, valide les demandes de provisionnement et de versement, et coordonne les mouvements de fonds entre les agences.
+    
+    \item[Direction de la Sécurité (Tunisie Sécurité)] : Assure le transport sécurisé des fonds, assigne les équipes (chauffeurs et gardes), et supervise les opérations de dispatch.
+    
+    \item[Réseau d'Agences] : Points de contact avec la clientèle, les agences soumettent des demandes de fonds selon leurs besoins opérationnels et reçoivent les livraisons.
+\end{description}
+
+\section{Cadrage du Projet}
+
+\subsection{Problème Identifié}
+
+La gestion actuelle des mouvements de fonds chez Amen Bank repose sur un processus largement manuel qui présente plusieurs défaillances :
+
+\begin{enumerate}[leftmargin=*]
+    \item \textbf{Absence de système centralisé} : Les demandes sont gérées via des documents papier ou des emails non structurés, dispersés entre différents services.
+    
+    \item \textbf{Circuit de validation inefficace} : Le processus d'approbation nécessite des signatures physiques multiples, entraînant des délais de plusieurs jours.
+    
+    \item \textbf{Coordination difficile} : La communication entre les agences, la Caisse Centrale et Tunisie Sécurité manque de fluidité et génère des malentendus.
+    
+    \item \textbf{Risques de sécurité} : Les informations sensibles (montants, coupures, équipes assignées) circulent sans protection adéquate.
+    
+    \item \textbf{Traçabilité insuffisante} : Il est difficile de reconstituer l'historique complet d'une demande et d'identifier les responsabilités en cas de problème.
+    
+    \item \textbf{Absence d'indicateurs} : La direction ne dispose pas de tableau de bord pour suivre les performances et identifier les goulots d'étranglement.
+\end{enumerate}
+
+\subsection{Solution Proposée}
+
+Pour résoudre ces problèmes, nous proposons le développement d'une \textbf{plateforme web centralisée} qui automatise l'intégralité du workflow de gestion des fonds. La solution comprend :
+
+\begin{itemize}[leftmargin=*]
+    \item Un système d'authentification sécurisé avec contrôle d'accès basé sur les rôles (RBAC)
+    \item Des interfaces utilisateur spécialisées pour chaque acteur (Agence, Caisse Centrale, Tunisie Sécurité, Administrateur)
+    \item Un workflow automatisé avec transitions d'états contrôlées
+    \item Un système de traçabilité complet (audit logs) de toutes les actions
+    \item Un tableau de bord analytique avec KPIs et visualisations
+    \item Des notifications en temps réel pour les changements d'état
+\end{itemize}
+
+Les bénéfices attendus incluent :
+
+\begin{itemize}[leftmargin=*]
+    \item Réduction des délais de traitement de 70\%
+    \item Élimination des erreurs de saisie et de coordination
+    \item Amélioration de la sécurité des informations
+    \item Visibilité complète sur les opérations en cours
+    \item Facilitation de l'audit et de la conformité réglementaire
+\end{itemize}
+
+\section{Étude de l'Existant}
+
+\subsection{Solutions Concurrentes sur le Marché}
+
+Plusieurs solutions commerciales existent pour la gestion bancaire, mais elles présentent des limitations pour notre cas d'usage spécifique :
+
+\subsubsection{SAP Banking Services}
+
+SAP propose un module de gestion de trésorerie intégré à sa suite ERP bancaire.
+
+\textbf{Avantages :}
+\begin{itemize}[leftmargin=*]
+    \item Solution mature et éprouvée
+    \item Intégration complète avec d'autres modules SAP
+    \item Nombreuses fonctionnalités de reporting
+\end{itemize}
+
+\textbf{Inconvénients :}
+\begin{itemize}[leftmargin=*]
+    \item Coût de licence très élevé (plusieurs centaines de milliers d'euros)
+    \item Complexité de déploiement et de paramétrage
+    \item Nécessite des compétences spécialisées rares et coûteuses
+    \item Workflows rigides difficiles à adapter aux processus spécifiques
+\end{itemize}
+
+\subsubsection{Oracle FLEXCUBE}
+
+Oracle FLEXCUBE est une solution bancaire core complète incluant la gestion de trésorerie.
+
+\textbf{Avantages :}
+\begin{itemize}[leftmargin=*]
+    \item Plateforme complète couvrant tous les besoins bancaires
+    \item Scalabilité et haute disponibilité
+    \item Support Oracle reconnu
+\end{itemize}
+
+\textbf{Inconvénients :}
+\begin{itemize}[leftmargin=*]
+    \item Infrastructure technique lourde et coûteuse
+    \item Durée d'implémentation très longue (12-24 mois)
+    \item Coûts de maintenance annuels élevés
+    \item Sur-dimensionné pour notre besoin spécifique
+\end{itemize}
+
+\subsubsection{Solutions Custom Développées en Interne}
+
+Certaines banques ont développé leurs propres solutions sur mesure.
+
+\textbf{Avantages :}
+\begin{itemize}[leftmargin=*]
+    \item Adaptation parfaite aux processus internes
+    \item Coûts de licence inexistants
+    \item Maîtrise complète du code source
+\end{itemize}
+
+\textbf{Inconvénients :}
+\begin{itemize}[leftmargin=*]
+    \item Qualité variable selon les compétences de l'équipe
+    \item Technologies souvent obsolètes (applications legacy)
+    \item Maintenance coûteuse à long terme
+    \item Documentation souvent insuffisante
+\end{itemize}
+
+\subsection{Critique et Positionnement}
+
+Notre solution se positionne comme une alternative moderne et pragmatique :
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Coût maîtrisé} : Développement sur mesure sans frais de licence
+    \item \textbf{Technologies modernes} : Stack technique actuel (Next.js, PostgreSQL)
+    \item \textbf{Adaptabilité} : Workflows configurables selon les besoins réels
+    \item \textbf{Déploiement rapide} : Mise en production en 3-4 mois
+    \item \textbf{Maintenabilité} : Code propre, documenté, avec tests automatisés
+    \item \textbf{Évolutivité} : Architecture modulaire permettant des extensions futures
+\end{itemize}
+
+\section{Méthodologie de Travail Adoptée}
+
+\subsection{Comparaison des Méthodologies}
+
+Avant de choisir notre approche de développement, nous avons comparé les deux grandes familles de méthodologies.
+
+\subsubsection{Méthodologie en Cascade (Waterfall)}
+
+Le modèle en cascade est une approche séquentielle où chaque phase doit être complétée avant de passer à la suivante.
+
+\textbf{Phases :} Analyse $\rightarrow$ Conception $\rightarrow$ Développement $\rightarrow$ Tests $\rightarrow$ Déploiement
+
+\textbf{Avantages :}
+\begin{itemize}[leftmargin=*]
+    \item Structure claire et prévisible
+    \item Documentation exhaustive
+    \item Facile à gérer pour des projets à périmètre fixe
+\end{itemize}
+
+\textbf{Inconvénients :}
+\begin{itemize}[leftmargin=*]
+    \item Rigidité face aux changements de besoins
+    \item Découverte tardive des problèmes
+    \item Absence de livraisons intermédiaires
+    \item Risque élevé si les spécifications initiales sont incorrectes
+\end{itemize}
+
+\subsubsection{Méthodologie Agile}
+
+L'approche Agile favorise le développement itératif et incrémental avec des cycles courts et des validations fréquentes.
+
+\textbf{Principes clés :}
+\begin{itemize}[leftmargin=*]
+    \item Individus et interactions plutôt que processus et outils
+    \item Logiciel fonctionnel plutôt que documentation exhaustive
+    \item Collaboration avec le client plutôt que négociation contractuelle
+    \item Adaptation au changement plutôt que suivi d'un plan rigide
+\end{itemize}
+
+\textbf{Avantages :}
+\begin{itemize}[leftmargin=*]
+    \item Flexibilité et adaptation rapide aux changements
+    \item Livraisons fréquentes de fonctionnalités utilisables
+    \item Feedback continu et amélioration progressive
+    \item Risques réduits grâce aux validations régulières
+\end{itemize}
+
+\textbf{Inconvénients :}
+\begin{itemize}[leftmargin=*]
+    \item Nécessite une implication forte du client
+    \item Moins prévisible en termes de planning global
+    \item Documentation parfois insuffisante
+\end{itemize}
+
+\subsection{Choix Justifié : Scrum}
+
+Compte tenu des caractéristiques de notre projet, nous avons opté pour la méthodologie \textbf{Scrum}, un framework Agile structuré. Ce choix se justifie par :
+
+\begin{itemize}[leftmargin=*]
+    \item La complexité fonctionnelle du système nécessitant des validations fréquentes
+    \item La disponibilité d'un Product Owner (représentant d'Amen Bank) impliqué
+    \item La durée limitée du projet (3-4 mois) nécessitant une progression visible
+    \item L'évolution possible des besoins au fur et à mesure de la compréhension du domaine
+\end{itemize}
+
+\subsection{Cadre Scrum}
+
+\subsubsection{Rôles}
+
+\begin{description}[leftmargin=*]
+    \item[Product Owner] : Représentant d'Amen Bank, définit les priorités et valide les fonctionnalités
+    \item[Scrum Master] : Facilite le processus Scrum, élimine les obstacles
+    \item[Équipe de Développement] : Développeur full-stack, responsable de la réalisation technique
+\end{description}
+
+\subsubsection{Événements Scrum}
+
+\begin{description}[leftmargin=*]
+    \item[Sprint Planning] : Réunion de planification en début de sprint (2h) pour sélectionner les user stories et définir les tâches
+    
+    \item[Daily Standup] : Point quotidien de 15 minutes pour synchroniser l'équipe et identifier les blocages
+    
+    \item[Sprint Review] : Démonstration des fonctionnalités réalisées au Product Owner (1h)
+    
+    \item[Sprint Retrospective] : Réunion d'amélioration continue identifiant ce qui fonctionne bien et ce qui peut être amélioré (1h)
+\end{description}
+
+\subsubsection{Artefacts}
+
+\begin{description}[leftmargin=*]
+    \item[Product Backlog] : Liste ordonnée de toutes les fonctionnalités souhaitées, priorisées selon la méthode MoSCoW (Must have, Should have, Could have, Won't have)
+    
+    \item[Sprint Backlog] : Ensemble des user stories et tâches sélectionnées pour le sprint en cours
+    
+    \item[Increment] : Version fonctionnelle du produit à la fin de chaque sprint, potentiellement livrable
+\end{description}
+
+\subsection{Planification Temporelle}
+
+Le projet a été planifié sur quatre sprints de deux à trois semaines chacun, pour une durée totale d'environ 10 semaines de développement.
+
+\subsubsection{Répartition des Sprints}
+
+\begin{description}[leftmargin=*]
+    \item[Sprint 1 (Semaines 1-2)] : Architecture et Authentification
+    \begin{itemize}
+        \item Configuration de l'environnement de développement
+        \item Mise en place de l'architecture Next.js full-stack
+        \item Système d'authentification et RBAC
+        \item Gestion des utilisateurs et des rôles
+    \end{itemize}
+    
+    \item[Sprint 2 (Semaines 3-5)] : Module Gestion des Demandes
+    \begin{itemize}
+        \item Création de demandes avec spécification des coupures
+        \item Liste et filtrage des demandes
+        \item Détails d'une demande
+        \item Validation des montants
+    \end{itemize}
+    
+    \item[Sprint 3 (Semaines 6-8)] : Module Validation et Assignment
+    \begin{itemize}
+        \item Validation/rejet des demandes par la Caisse Centrale
+        \item Assignment des équipes de sécurité
+        \item Système de logs et traçabilité
+        \item Notifications de changement d'état
+    \end{itemize}
+    
+    \item[Sprint 4 (Semaines 9-10)] : Module Dispatch et Analytics
+    \begin{itemize}
+        \item Confirmation de dispatch par Tunisie Sécurité
+        \item Réception des fonds par les agences
+        \item Gestion des non-conformités
+        \item Tableau de bord analytics avec KPIs
+    \end{itemize}
+\end{description}
+
+\subsubsection{Diagramme de Gantt}
+
+La figure \ref{fig:gantt} présente la planification temporelle du projet sous forme de diagramme de Gantt.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{gantt.png}
+    \caption{Diagramme de Gantt du projet}
+    \label{fig:gantt}
+\end{figure}
+
+Ce diagramme illustre la progression séquentielle des sprints avec leurs jalons respectifs. Chaque sprint se termine par une revue et une rétrospective avant d'entamer le suivant.
+
+\section{Conclusion}
+
+Dans ce chapitre, nous avons présenté le cadre général de notre projet. Nous avons d'abord exposé Amen Bank, son historique et sa structure organisationnelle, avant de définir précisément la problématique à résoudre et la solution que nous proposons. L'étude de l'existant nous a permis de positionner notre approche par rapport aux solutions commerciales disponibles. Enfin, nous avons justifié notre choix méthodologique en faveur de Scrum et présenté la planification détaillée du projet en quatre sprints.
+
+Le chapitre suivant sera consacré à l'état de l'art, où nous approfondirons les concepts métiers bancaires et présenterons en détail la pile technologique retenue pour le développement de la solution.
+
+\newpage

@@ -1,0 +1,30 @@
+sequenceDiagram
+    actor Agence
+    participant UI as Frontend
+    participant API as API Requests
+    participant DB as Base Données
+    participant Notif as Notifications
+    
+    Agence->>UI: Clique "Recevoir"
+    UI->>UI: Dialog formulaire réception
+    Agence->>UI: Coche "Conforme?"
+    alt Non-conforme
+        Agence->>UI: Saisit raison non-conformité
+    end
+    Agence->>UI: Ajoute notes
+    Agence->>UI: Soumet
+    UI->>API: POST /api/requests/[id]/receive
+    API->>API: Vérifier authz (Agence role)
+    API->>DB: Vérifier status = DISPATCHED
+    alt Conforme
+        API->>DB: UPDATE status=RECEIVED
+        API->>DB: SET receivedAt, receivedBy
+    else Non-conforme
+        API->>DB: UPDATE status=COMPLETED_WITH_ISSUES
+        API->>DB: SET nonConformityReason
+    end
+    API->>DB: INSERT ActionLog
+    DB-->>API: Confirmé
+    API->>Notif: Notifier CC + TS
+    API-->>UI: Request reçue
+    UI-->>Agence: Toast succès

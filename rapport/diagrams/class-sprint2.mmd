@@ -1,0 +1,31 @@
+classDiagram
+    class Request {
+        +Int id
+        +String requestNumber
+        +String type
+        +Int agencyId
+        +Float totalAmount
+        +String description
+        +String status
+        +DateTime createdAt
+        +DateTime updatedAt
+    }
+    
+    class DenominationDetail {
+        +Int id
+        +Int requestId
+        +Float denomination
+        +Int quantity
+        +Float subtotal
+    }
+    
+    class Agency {
+        +Int id
+        +String name
+        +String location
+        +String codeAgence
+    }
+    
+    Request "1" --> "n" DenominationDetail : contains
+    Request "n" --> "1" Agency : belongsTo
+    Agency "1" --> "n" Request : submits

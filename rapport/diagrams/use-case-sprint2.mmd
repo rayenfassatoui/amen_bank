@@ -1,0 +1,27 @@
+graph LR
+    Agence((Agence))
+    CC((Caisse<br/>Centrale))
+    Sys((Système))
+    
+    CreateReq[Créer demande]
+    AddDenom[Ajouter denominations]
+    ConsultReq[Consulter demandes]
+    FilterReq[Filtrer demandes]
+    ViewAll[Voir toutes demandes]
+    CalcTotal[Calculer montant total]
+    
+    Agence --> CreateReq
+    Agence --> AddDenom
+    Agence --> ConsultReq
+    Agence --> FilterReq
+    
+    CC --> ViewAll
+    CC --> FilterReq
+    
+    CreateReq --> CalcTotal
+    AddDenom --> CalcTotal
+    Sys -.effectue.-> CalcTotal
+    
+    style Agence fill:#8b5cf6,stroke:#7c3aed,color:#fff
+    style CC fill:#10b981,stroke:#059669,color:#fff
+    style Sys fill:#6b7280,stroke:#4b5563,color:#fff

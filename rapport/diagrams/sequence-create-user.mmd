@@ -1,0 +1,22 @@
+sequenceDiagram
+    actor Admin as Administrateur
+    participant UI as Frontend
+    participant API as API Users
+    participant DB as Base Données
+    
+    Admin->>UI: Remplit formulaire utilisateur
+    UI->>UI: Validation client (Zod)
+    UI->>API: POST /api/users
+    API->>API: Validation serveur
+    API->>DB: Vérifier email unique
+    alt Email disponible
+        API->>API: Hash mot de passe (bcrypt)
+        API->>DB: INSERT utilisateur
+        DB-->>API: Utilisateur créé
+        API-->>UI: Succès + user data
+        UI-->>Admin: Toast succès + redirection
+    else Email déjà utilisé
+        DB-->>API: Erreur duplicate
+        API-->>UI: Erreur 409
+        UI-->>Admin: Message erreur
+    end

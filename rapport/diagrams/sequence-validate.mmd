@@ -1,0 +1,25 @@
+sequenceDiagram
+    actor CC as Caisse Centrale
+    participant UI as Frontend
+    participant API as API Requests
+    participant DB as Base Données
+    participant Notif as Notifications
+    
+    CC->>UI: Clique "Valider"
+    UI->>UI: Dialog confirmation
+    CC->>UI: Confirme
+    UI->>API: POST /api/requests/[id]/validate
+    API->>API: Vérifier authz (CC role)
+    API->>DB: Vérifier status = SUBMITTED
+    alt Status valide
+        API->>DB: UPDATE status=VALIDATED
+        API->>DB: SET validatedBy, validatedAt
+        API->>DB: INSERT ActionLog
+        DB-->>API: Confirmé
+        API->>Notif: Notifier Tunisie Sécurité
+        API-->>UI: Request validée
+        UI-->>CC: Toast succès
+    else Status invalide
+        API-->>UI: Erreur 400
+        UI-->>CC: Message erreur
+    end

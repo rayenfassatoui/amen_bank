@@ -1,0 +1,20 @@
+sequenceDiagram
+    actor User as Utilisateur
+    participant UI as Frontend
+    participant API as API Auth
+    participant DB as Base Données
+    
+    User->>UI: Saisit email + mot de passe
+    UI->>API: POST /api/auth/signin
+    API->>DB: Recherche utilisateur par email
+    DB-->>API: Utilisateur trouvé
+    API->>API: Vérifie hash bcrypt
+    alt Credentials valides
+        API->>API: Génère JWT token
+        API-->>UI: Token + user info
+        UI->>UI: Stocke token (cookie)
+        UI-->>User: Redirection dashboard
+    else Credentials invalides
+        API-->>UI: Erreur 401
+        UI-->>User: Message erreur
+    end

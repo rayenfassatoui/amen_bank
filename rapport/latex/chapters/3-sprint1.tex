@@ -1,0 +1,510 @@
+\chapter{Sprint 1 - Architecture et Authentification}
+
+\section{Introduction}
+
+Le premier sprint constitue la fondation technique du projet. L'objectif principal est de mettre en place l'infrastructure de base : l'architecture Next.js full-stack, le modèle de données initial, et surtout le système d'authentification sécurisé avec contrôle d'accès basé sur les rôles (RBAC). Ce sprint établit les standards de sécurité et de qualité qui seront maintenus tout au long du développement.
+
+\section{Objectifs du Sprint}
+
+Les objectifs spécifiques du Sprint 1 sont :
+
+\begin{enumerate}[leftmargin=*]
+    \item Configurer l'environnement de développement complet (Next.js, PostgreSQL, Prisma)
+    \item Définir et implémenter le schéma de base de données initial
+    \item Développer le système d'authentification avec NextAuth.js
+    \item Implémenter le contrôle d'accès basé sur les rôles (RBAC)
+    \item Créer les interfaces de gestion des utilisateurs (CRUD)
+    \item Développer les dashboards de base pour chaque rôle
+    \item Mettre en place les composants UI réutilisables
+\end{enumerate}
+
+\section{Spécification des Besoins}
+
+\subsection{Besoins Fonctionnels}
+
+\subsubsection{Authentification}
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{F1.1} : Un utilisateur doit pouvoir se connecter avec email et mot de passe
+    \item \textbf{F1.2} : Le système doit créer une session sécurisée après connexion réussie
+    \item \textbf{F1.3} : Un utilisateur authentifié doit pouvoir se déconnecter
+    \item \textbf{F1.4} : Les utilisateurs non authentifiés doivent être automatiquement redirigés vers la page de login
+    \item \textbf{F1.5} : Le système doit afficher des messages d'erreur clairs en cas d'échec d'authentification
+\end{itemize}
+
+\subsubsection{Gestion des Utilisateurs}
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{F1.6} : Un administrateur doit pouvoir créer un nouvel utilisateur
+    \item \textbf{F1.7} : Un administrateur doit pouvoir consulter la liste de tous les utilisateurs
+    \item \textbf{F1.8} : Un administrateur doit pouvoir modifier les informations d'un utilisateur
+    \item \textbf{F1.9} : Un administrateur doit pouvoir supprimer un utilisateur
+    \item \textbf{F1.10} : Chaque utilisateur doit être associé à un rôle unique
+    \item \textbf{F1.11} : Les utilisateurs de type Agence doivent être rattachés à une agence spécifique
+\end{itemize}
+
+\subsubsection{Gestion des Rôles et Agences}
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{F1.12} : Le système doit supporter quatre rôles prédéfinis : Admin, Agence, CaisseCentrale, TunisieSécurité
+    \item \textbf{F1.13} : Un administrateur doit pouvoir consulter la liste des agences
+    \item \textbf{F1.14} : Un administrateur doit pouvoir créer de nouvelles agences
+\end{itemize}
+
+\subsubsection{Tableau de Bord}
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{F1.15} : Chaque utilisateur doit accéder à un dashboard personnalisé selon son rôle
+    \item \textbf{F1.16} : Le dashboard doit afficher les informations pertinentes (nom, rôle, agence)
+    \item \textbf{F1.17} : La navigation doit être adaptée aux permissions de l'utilisateur
+\end{itemize}
+
+\subsection{Besoins Non-Fonctionnels}
+
+\subsubsection{Sécurité}
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{NF1.1} : Les mots de passe doivent être hashés avec bcrypt (12 rounds)
+    \item \textbf{NF1.2} : Les sessions doivent utiliser des JWT avec expiration (24h)
+    \item \textbf{NF1.3} : Les cookies de session doivent être HTTP-only et Secure
+    \item \textbf{NF1.4} : Chaque route sensible doit être protégée par un middleware d'authentification
+    \item \textbf{NF1.5} : La validation des données doit être effectuée côté serveur avec Zod
+\end{itemize}
+
+\subsubsection{Performance}
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{NF1.6} : Le temps de chargement initial de la page de login ne doit pas excéder 1 seconde
+    \item \textbf{NF1.7} : L'authentification doit être réalisée en moins de 500ms
+    \item \textbf{NF1.8} : Les pages doivent utiliser le SSR de Next.js pour un chargement rapide
+\end{itemize}
+
+\subsubsection{Ergonomie}
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{NF1.9} : L'interface doit être responsive (mobile, tablette, desktop)
+    \item \textbf{NF1.10} : Les actions utilisateur doivent avoir un feedback visuel immédiat (toasts, loaders)
+    \item \textbf{NF1.11} : Les messages d'erreur doivent être explicites et orientés solution
+\end{itemize}
+
+\subsubsection{Maintenabilité}
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{NF1.12} : Le code doit être écrit en TypeScript avec types stricts
+    \item \textbf{NF1.13} : L'architecture doit suivre le principe de séparation des responsabilités
+    \item \textbf{NF1.14} : Les composants UI doivent être réutilisables et bien documentés
+\end{itemize}
+
+\subsection{Acteurs Identifiés}
+
+Le système distingue quatre types d'acteurs principaux :
+
+\begin{description}[leftmargin=*]
+    \item[Administrateur] : Responsable de la gestion globale du système. Crée et gère les utilisateurs, les rôles et les agences. Accède aux statistiques et analytics.
+    
+    \item[Agence] : Utilisateur rattaché à une agence bancaire spécifique. Peut créer des demandes de fonds et consulter l'historique de son agence.
+    
+    \item[Caisse Centrale] : Responsable de la validation des demandes. Examine les demandes soumises et décide de leur approbation ou rejet.
+    
+    \item[Tunisie Sécurité] : Responsable de la logistique. Assigne les équipes de transport et confirme les dispatches.
+\end{description}
+
+\subsection{Diagramme de Cas d'Utilisation - Sprint 1}
+
+La figure \ref{fig:use-case-sprint1} présente les cas d'utilisation du premier sprint.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{use-case-sprint1.png}
+    \caption{Diagramme de cas d'utilisation - Sprint 1}
+    \label{fig:use-case-sprint1}
+\end{figure}
+
+Ce diagramme montre les interactions principales entre les acteurs et le système pendant cette première phase. L'administrateur peut gérer les utilisateurs, tandis que tous les acteurs peuvent s'authentifier et accéder à leur dashboard respectif.
+
+\section{Conception du Sprint}
+
+\subsection{Diagramme de Classes - Entités Principales}
+
+La figure \ref{fig:class-sprint1} présente le modèle de classes des entités principales du Sprint 1.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{class-sprint1.png}
+    \caption{Diagramme de classes - Sprint 1}
+    \label{fig:class-sprint1}
+\end{figure}
+
+Les entités principales sont :
+
+\begin{description}[leftmargin=*]
+    \item[User] : Représente un utilisateur du système avec ses identifiants, son rôle et son agence éventuelle.
+    
+    \item[Role] : Définit un rôle avec un nom et des permissions associées.
+    
+    \item[Agency] : Représente une agence bancaire avec son nom, sa localisation et son code unique.
+\end{description}
+
+Les relations sont :
+\begin{itemize}[leftmargin=*]
+    \item Un User appartient à un Role (many-to-one)
+    \item Un User peut appartenir à une Agency (many-to-one, optionnel)
+    \item Une Agency peut avoir plusieurs Users (one-to-many)
+\end{itemize}
+
+\subsection{Diagramme de Séquence - Processus de Connexion}
+
+La figure \ref{fig:sequence-login} illustre le processus d'authentification d'un utilisateur.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{sequence-login.png}
+    \caption{Diagramme de séquence - Processus de connexion}
+    \label{fig:sequence-login}
+\end{figure}
+
+Le processus suit les étapes suivantes :
+
+\begin{enumerate}[leftmargin=*]
+    \item L'utilisateur saisit son email et mot de passe dans le formulaire
+    \item Le frontend envoie une requête POST à l'API d'authentification
+    \item L'API recherche l'utilisateur dans la base de données par email
+    \item Si l'utilisateur existe, l'API compare le hash du mot de passe avec bcrypt
+    \item Si la validation réussit, l'API génère un JWT contenant l'ID, le rôle et l'agence
+    \item Le JWT est stocké dans un cookie HTTP-only sécurisé
+    \item L'API retourne les informations utilisateur au frontend
+    \item Le frontend redirige l'utilisateur vers son dashboard approprié
+\end{enumerate}
+
+\subsection{Diagramme de Séquence - Création d'Utilisateur}
+
+La figure \ref{fig:sequence-create-user} montre le processus de création d'un utilisateur par l'administrateur.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{sequence-create-user.png}
+    \caption{Diagramme de séquence - Création d'utilisateur}
+    \label{fig:sequence-create-user}
+\end{figure}
+
+Les étapes détaillées sont :
+
+\begin{enumerate}[leftmargin=*]
+    \item L'administrateur accède au formulaire de création d'utilisateur
+    \item Il saisit les informations requises (nom, prénom, email, mot de passe, rôle, agence)
+    \item Le frontend valide les données côté client avec Zod
+    \item Une requête POST est envoyée à \texttt{/api/users} avec les données
+    \item L'API vérifie que l'utilisateur courant est bien administrateur
+    \item L'API valide à nouveau les données côté serveur (Zod schema)
+    \item L'API vérifie l'unicité de l'email dans la base de données
+    \item Le mot de passe est hashé avec bcrypt
+    \item L'utilisateur est créé dans la base via Prisma
+    \item L'API retourne l'utilisateur créé (sans le mot de passe)
+    \item Le frontend affiche un message de succès et actualise la liste
+\end{enumerate}
+
+\subsection{Diagramme d'Activités - Flux d'Authentification}
+
+La figure \ref{fig:activity-auth} présente le flux décisionnel du processus d'authentification.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{activity-auth.png}
+    \caption{Diagramme d'activités - Flux d'authentification}
+    \label{fig:activity-auth}
+\end{figure}
+
+Ce diagramme illustre les différents chemins possibles :
+
+\begin{itemize}[leftmargin=*]
+    \item Si l'utilisateur est déjà authentifié, il accède directement à son dashboard
+    \item Sinon, il est redirigé vers la page de login
+    \item Après soumission du formulaire, les credentials sont vérifiés
+    \item En cas de succès, un JWT est généré et l'utilisateur accède à l'application
+    \item En cas d'échec, un message d'erreur est affiché et l'utilisateur reste sur la page de login
+\end{itemize}
+
+\subsection{Modèle de Données - Schema Prisma}
+
+Le schéma Prisma définit la structure de la base de données pour le Sprint 1 :
+
+\begin{lstlisting}[language=SQL]
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  firstName String
+  lastName  String
+  role      Role     @relation(fields: [roleId], references: [id])
+  roleId    Int
+  agency    Agency?  @relation(fields: [agencyId], references: [id])
+  agencyId  Int?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@index([email])
+  @@index([roleId])
+}
+
+model Role {
+  id    Int    @id @default(autoincrement())
+  name  String @unique
+  users User[]
+}
+
+model Agency {
+  id         Int      @id @default(autoincrement())
+  name       String
+  location   String
+  codeAgence String   @unique
+  users      User[]
+  createdAt  DateTime @default(now())
+  
+  @@index([codeAgence])
+}
+\end{lstlisting}
+
+Les contraintes importantes :
+\begin{itemize}[leftmargin=*]
+    \item Email unique pour chaque utilisateur
+    \item Code agence unique pour chaque agence
+    \item Index sur les colonnes fréquemment interrogées (email, roleId, codeAgence)
+    \item Timestamps automatiques pour audit (createdAt, updatedAt)
+\end{itemize}
+
+\section{Réalisation du Sprint}
+
+\subsection{Composants Frontend Développés}
+
+\subsubsection{Page de Login (\texttt{app/login/page.tsx})}
+
+Interface d'authentification avec :
+\begin{itemize}[leftmargin=*]
+    \item Formulaire email/password avec validation en temps réel
+    \item Affichage des erreurs de validation
+    \item Loader pendant la soumission
+    \item Redirection automatique après connexion réussie
+\end{itemize}
+
+\subsubsection{Dashboard Layout (\texttt{components/layout/dashboard-layout.tsx})}
+
+Layout principal de l'application incluant :
+\begin{itemize}[leftmargin=*]
+    \item Sidebar avec navigation adaptée au rôle
+    \item Header avec informations utilisateur et bouton de déconnexion
+    \item Zone de contenu principale
+    \item Breadcrumb pour la navigation contextuelle
+\end{itemize}
+
+\subsubsection{Protected Route (\texttt{components/auth/protected-route.tsx})}
+
+Composant wrapper qui :
+\begin{itemize}[leftmargin=*]
+    \item Vérifie l'authentification de l'utilisateur
+    \item Redirige vers login si non authentifié
+    \item Affiche un loader pendant la vérification
+    \item Vérifie optionnellement les permissions par rôle
+\end{itemize}
+
+\subsubsection{User Management (Admin)}
+
+Interface complète de gestion des utilisateurs avec :
+\begin{itemize}[leftmargin=*]
+    \item Tableau listant tous les utilisateurs avec pagination
+    \item Filtres par rôle et agence
+    \item Bouton d'ajout ouvrant un dialog modal
+    \item Actions d'édition et suppression sur chaque ligne
+    \item Confirmation avant suppression
+\end{itemize}
+
+\subsection{Routes API Implémentées}
+
+\subsubsection{Authentification}
+
+\begin{description}[leftmargin=*]
+    \item[\texttt{POST /api/auth/signin}] : Authentification avec email/password, retourne JWT
+    \item[\texttt{POST /api/auth/signout}] : Déconnexion, suppression du cookie de session
+    \item[\texttt{GET /api/auth/session}] : Récupération des informations de session courante
+\end{description}
+
+\subsubsection{Gestion des Utilisateurs}
+
+\begin{description}[leftmargin=*]
+    \item[\texttt{POST /api/users}] : Création d'un nouvel utilisateur (admin only)
+    \item[\texttt{GET /api/users}] : Liste de tous les utilisateurs avec pagination (admin only)
+    \item[\texttt{GET /api/users/[id]}] : Détails d'un utilisateur spécifique
+    \item[\texttt{PUT /api/users/[id]}] : Modification d'un utilisateur (admin only)
+    \item[\texttt{DELETE /api/users/[id]}] : Suppression d'un utilisateur (admin only)
+\end{description}
+
+\subsubsection{Rôles et Agences}
+
+\begin{description}[leftmargin=*]
+    \item[\texttt{GET /api/roles}] : Liste des rôles disponibles
+    \item[\texttt{GET /api/agencies}] : Liste de toutes les agences
+    \item[\texttt{POST /api/agencies}] : Création d'une nouvelle agence (admin only)
+\end{description}
+
+\subsection{Composants Logique (Services)}
+
+\subsubsection{Configuration NextAuth (\texttt{lib/auth.ts})}
+
+Configuration principale de NextAuth.js incluant :
+\begin{itemize}[leftmargin=*]
+    \item Credentials Provider pour authentification email/password
+    \item Callbacks pour enrichir le JWT avec rôle et agence
+    \item Pages personnalisées (login, error)
+    \item Options de session (stratégie JWT, durée de vie)
+\end{itemize}
+
+\subsubsection{Utilitaires Auth (\texttt{lib/auth-utils.ts})}
+
+Fonctions réutilisables :
+\begin{itemize}[leftmargin=*]
+    \item \texttt{getServerSession()} : Récupération de la session côté serveur
+    \item \texttt{requireAuth()} : Middleware pour routes protégées
+    \item \texttt{requireRole(role)} : Vérification de rôle spécifique
+    \item \texttt{hashPassword(password)} : Hashing bcrypt
+    \item \texttt{verifyPassword(password, hash)} : Vérification bcrypt
+\end{itemize}
+
+\subsubsection{Database Client (\texttt{lib/db.ts})}
+
+Initialisation et export du client Prisma :
+\begin{lstlisting}[language=JavaScript]
+import { PrismaClient } from '@prisma/client';
+
+const globalForPrisma = global as unknown as {
+  prisma: PrismaClient | undefined;
+};
+
+export const prisma =
+  globalForPrisma.prisma ??
+  new PrismaClient({
+    log: ['query', 'error', 'warn'],
+  });
+
+if (process.env.NODE_ENV !== 'production')
+  globalForPrisma.prisma = prisma;
+\end{lstlisting}
+
+Cette approche évite la multiplication des connexions en développement avec hot-reload.
+
+\subsection{Composants UI Réutilisables}
+
+Nous avons créé une bibliothèque de composants UI de base avec shadcn/ui et Tailwind :
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Button} : Bouton avec variantes (primary, secondary, danger, ghost)
+    \item \textbf{Input} : Champ de saisie avec label et message d'erreur
+    \item \textbf{Label} : Label de formulaire
+    \item \textbf{Card} : Conteneur de contenu avec header/body/footer
+    \item \textbf{Dialog} : Modal dialog pour formulaires et confirmations
+    \item \textbf{Table} : Tableau avec tri, pagination et sélection
+    \item \textbf{Select} : Liste déroulante avec recherche
+    \item \textbf{Skeleton} : Placeholder de chargement
+\end{itemize}
+
+Ces composants sont stylisés avec Tailwind CSS et respectent les principes d'accessibilité (ARIA labels, navigation au clavier).
+
+\section{Tests et Validation}
+
+\subsection{Tests Fonctionnels}
+
+Nous avons effectué les tests suivants :
+
+\subsubsection{Authentification}
+
+\begin{itemize}[leftmargin=*]
+    \item [\checkmark] Login avec credentials valides réussit
+    \item [\checkmark] Login avec email invalide échoue avec message approprié
+    \item [\checkmark] Login avec mot de passe incorrect échoue
+    \item [\checkmark] Session créée après login réussi
+    \item [\checkmark] Logout supprime la session correctement
+    \item [\checkmark] Redirection automatique vers login si non authentifié
+\end{itemize}
+
+\subsubsection{Gestion des Utilisateurs}
+
+\begin{itemize}[leftmargin=*]
+    \item [\checkmark] Création d'utilisateur avec données valides réussit
+    \item [\checkmark] Email dupliqué provoque une erreur
+    \item [\checkmark] Mot de passe trop court refusé par validation
+    \item [\checkmark] Liste des utilisateurs s'affiche correctement
+    \item [\checkmark] Modification d'utilisateur sauvegarde les changements
+    \item [\checkmark] Suppression d'utilisateur retire de la base
+\end{itemize}
+
+\subsubsection{Permissions par Rôle}
+
+\begin{itemize}[leftmargin=*]
+    \item [\checkmark] Admin peut accéder à la gestion des utilisateurs
+    \item [\checkmark] Agence ne peut pas accéder à la gestion des utilisateurs
+    \item [\checkmark] Chaque rôle voit son dashboard approprié
+    \item [\checkmark] Navigation adaptée selon le rôle utilisateur
+\end{itemize}
+
+\subsection{Tests de Sécurité}
+
+\begin{itemize}[leftmargin=*]
+    \item [\checkmark] Mots de passe hashés dans la base (bcrypt)
+    \item [\checkmark] JWT signé correctement et non falsifiable
+    \item [\checkmark] Cookies de session HTTP-only et Secure
+    \item [\checkmark] Routes API protégées refusent accès non authentifié
+    \item [\checkmark] Validation serveur empêche injection SQL
+\end{itemize}
+
+\section{Revue de Sprint}
+
+\subsection{Démonstration}
+
+À la fin du Sprint 1, nous avons présenté au Product Owner les fonctionnalités suivantes :
+
+\begin{enumerate}[leftmargin=*]
+    \item Processus de connexion complet avec validation
+    \item Dashboard administrateur avec navigation
+    \item Interface de gestion des utilisateurs (CRUD complet)
+    \item Différents dashboards par rôle (Admin, Agence, Caisse Centrale, Tunisie Sécurité)
+    \item Protection des routes et contrôle d'accès par rôle
+\end{enumerate}
+
+\subsection{Validation Product Owner}
+
+Le Product Owner a validé :
+
+\begin{itemize}[leftmargin=*]
+    \item L'approche architecture (Next.js full-stack)
+    \item La sécurité du système d'authentification
+    \item L'ergonomie des interfaces (design moderne, responsive)
+    \item La couverture des besoins fonctionnels du Sprint 1
+\end{itemize}
+
+\subsection{Feedback et Ajustements}
+
+Quelques suggestions ont été formulées pour les sprints suivants :
+
+\begin{itemize}[leftmargin=*]
+    \item Ajouter un système de recherche dans la liste des utilisateurs
+    \item Améliorer les messages de feedback utilisateur (toasts plus visibles)
+    \item Prévoir l'export de la liste des utilisateurs en Excel
+\end{itemize}
+
+\subsection{Métriques du Sprint}
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Durée} : 2 semaines
+    \item \textbf{User Stories complétées} : 8/8 (100\%)
+    \item \textbf{Points de complexité} : 21/21
+    \item \textbf{Bugs identifiés} : 3 (tous résolus)
+    \item \textbf{Couverture de tests} : Tests manuels complets
+\end{itemize}
+
+\section{Conclusion du Chapitre}
+
+Le Sprint 1 a permis de poser des fondations solides pour le projet. Le système d'authentification sécurisé avec RBAC garantit que seuls les utilisateurs autorisés peuvent accéder aux fonctionnalités sensibles. Le modèle de données initial est extensible et prêt à accueillir les entités plus complexes des sprints suivants (demandes, logs, équipes).
+
+L'architecture Next.js full-stack s'est révélée pertinente, offrant un développement fluide avec partage de code entre frontend et backend. Les composants UI réutilisables créés dans ce sprint accéléreront le développement des interfaces des sprints suivants.
+
+Le chapitre suivant décrit le Sprint 2, consacré au développement du module core du système : la gestion des demandes de fonds avec spécification des coupures et consultation de l'historique.
+
+\newpage

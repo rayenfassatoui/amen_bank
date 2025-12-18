@@ -1,0 +1,24 @@
+flowchart TD
+    Start([Demande DISPATCHED])
+    AgenceReceive[Agence reçoit fonds]
+    CheckConform{Fonds<br/>conformes?}
+    UpdateReceived[UPDATE status = RECEIVED]
+    InputReason[Saisir raison non-conformité]
+    UpdateIssues[UPDATE status = COMPLETED_WITH_ISSUES]
+    LogReceived[INSERT ActionLog RECEIVED]
+    LogIssues[INSERT ActionLog ISSUES]
+    NotifyAll[Notifier CC + TS]
+    EndSuccess([Fin - SUCCESS])
+    EndIssues([Fin - WITH ISSUES])
+    
+    Start --> AgenceReceive
+    AgenceReceive --> CheckConform
+    CheckConform -->|OUI| UpdateReceived
+    CheckConform -->|NON| InputReason
+    UpdateReceived --> LogReceived
+    InputReason --> UpdateIssues
+    UpdateIssues --> LogIssues
+    LogReceived --> NotifyAll
+    LogIssues --> NotifyAll
+    NotifyAll --> EndSuccess
+    NotifyAll --> EndIssues

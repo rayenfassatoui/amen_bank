@@ -1,0 +1,30 @@
+classDiagram
+    class User {
+        +Int id
+        +String email
+        +String password
+        +String firstName
+        +String lastName
+        +Int roleId
+        +Int agencyId
+        +DateTime createdAt
+        +DateTime updatedAt
+    }
+    
+    class Role {
+        +Int id
+        +String name
+        +String[] permissions
+    }
+    
+    class Agency {
+        +Int id
+        +String name
+        +String location
+        +String codeAgence
+    }
+    
+    User "1" --> "1" Role : has
+    User "n" --> "0..1" Agency : belongsTo
+    Role "1" --> "n" User : defines
+    Agency "1" --> "n" User : employs

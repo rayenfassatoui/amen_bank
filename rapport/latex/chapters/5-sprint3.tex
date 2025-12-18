@@ -1,0 +1,663 @@
+\chapter{Sprint 3 - Module Validation et Assignment}
+
+\section{Introduction}
+
+Le Sprint 3 se concentre sur l'implémentation du workflow multiniveaux qui transforme une demande soumise en demande prête à être dispatchée. Ce sprint est crucial car il met en place les mécanismes d'approbation et d'allocation des ressources logistiques, deux étapes essentielles dans le processus de gestion des fonds.
+
+\section{Vue d'Ensemble}
+
+Le module de validation et d'assignment couvre deux processus distincts mais séquentiels :
+
+\begin{enumerate}[leftmargin=*]
+    \item \textbf{Validation par la Caisse Centrale} : Examen des demandes soumises et décision d'approbation ou de rejet
+    \item \textbf{Assignment par Tunisie Sécurité} : Attribution d'une équipe de transport (chauffeur + garde) aux demandes validées
+\end{enumerate}
+
+Ces processus garantissent que seules les demandes légitimes sont traitées et que les ressources humaines et logistiques sont correctement allouées.
+
+\section{Objectif Principal}
+
+L'objectif principal du Sprint 3 est d'automatiser le processus d'approbation et d'attribution des ressources logistiques, tout en assurant une traçabilité complète de chaque décision et action. Le système doit permettre aux différents acteurs de prendre des décisions éclairées rapidement.
+
+\section{User Stories Détaillées}
+
+Le tableau \ref{tab:user-stories-sprint3} présente les user stories du Sprint 3.
+
+\begin{table}[H]
+\centering
+\caption{User Stories - Sprint 3}
+\label{tab:user-stories-sprint3}
+\small
+\begin{tabular}{@{}p{1cm}p{2.5cm}p{5cm}p{4cm}p{1.5cm}@{}}
+\toprule
+\textbf{ID} & \textbf{En tant que} & \textbf{Je veux} & \textbf{Critères d'acceptation} & \textbf{Priorité} \\ 
+\midrule
+US-06 & Caisse Centrale & Valider une demande soumise & Transition SUBMITTED → VALIDATED & Must \\
+\midrule
+US-07 & Caisse Centrale & Rejeter une demande avec motif & Ajouter justification obligatoire & Must \\
+\midrule
+US-08 & Tunisie Sécurité & Assigner une équipe à une demande & Sélectionner chauffeur + garde & Must \\
+\midrule
+US-09 & Tunisie Sécurité & Voir liste équipes disponibles & CIN + noms + disponibilité & Must \\
+\midrule
+US-10 & Système & Tracer chaque action & Logs utilisateur + timestamp & Should \\
+\midrule
+US-11 & Système & Envoyer notifications & Notifier changements statut & Could \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Analyse et Spécifications}
+
+\subsection{Diagramme de Cas d'Utilisation - Sprint 3}
+
+La figure \ref{fig:use-case-sprint3} présente les cas d'utilisation du Sprint 3.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{use-case-sprint3.png}
+    \caption{Diagramme de cas d'utilisation - Sprint 3}
+    \label{fig:use-case-sprint3}
+\end{figure}
+
+Les cas d'utilisation principaux sont :
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Valider demande} : Approbation par la Caisse Centrale
+    \item \textbf{Rejeter demande} : Refus avec justification
+    \item \textbf{Assigner équipe} : Allocation des ressources logistiques
+    \item \textbf{Consulter équipes disponibles} : Vue sur les ressources
+    \item \textbf{Enregistrer action} : Traçabilité automatique
+\end{itemize}
+
+\subsection{Raffinements Textuels - Scénario Validation}
+
+\subsubsection{Cas d'utilisation : Valider une Demande}
+
+\textbf{Acteur Principal :} Utilisateur Caisse Centrale
+
+\textbf{Préconditions :}
+\begin{itemize}[leftmargin=*]
+    \item L'utilisateur est authentifié avec le rôle Caisse Centrale
+    \item Une demande existe avec statut SUBMITTED
+    \item Les fonds nécessaires sont disponibles
+\end{itemize}
+
+\textbf{Scénario nominal :}
+\begin{enumerate}[leftmargin=*]
+    \item L'utilisateur accède à la liste des demandes en attente (statut = SUBMITTED)
+    \item L'utilisateur clique sur une demande pour voir les détails
+    \item Le système affiche toutes les informations (montant, agence, denominations)
+    \item L'utilisateur examine la demande (vérification de la pertinence)
+    \item L'utilisateur clique sur le bouton "Valider"
+    \item Le système affiche un dialog de confirmation
+    \item L'utilisateur confirme la validation
+    \item Le système met à jour le statut de la demande → VALIDATED
+    \item Le système enregistre la date et l'utilisateur ayant validé
+    \item Le système crée un log d'action (action: VALIDATED, actor: userId)
+    \item Le système envoie une notification à Tunisie Sécurité
+    \item Le système affiche un message de succès
+    \item La vue est rafraîchie, la demande n'apparaît plus dans la liste SUBMITTED
+\end{enumerate}
+
+\textbf{Postconditions :}
+\begin{itemize}[leftmargin=*]
+    \item La demande passe au statut VALIDATED
+    \item Tunisie Sécurité peut maintenant assigner une équipe
+    \item Un log d'action est créé pour audit
+\end{itemize}
+
+\subsubsection{Scénario Alternatif : Rejet avec Motif}
+
+\textbf{Point de divergence :} Étape 5 du scénario nominal
+
+\begin{enumerate}[leftmargin=*]
+    \item L'utilisateur identifie un problème (montant excessif, demande non justifiée)
+    \item L'utilisateur clique sur le bouton "Rejeter"
+    \item Le système affiche un dialog avec un champ texte "Motif du rejet"
+    \item L'utilisateur saisit une justification détaillée (minimum 10 caractères)
+    \item L'utilisateur confirme le rejet
+    \item Le système valide la présence du motif
+    \item Le système met à jour le statut → REJECTED
+    \item Le système enregistre le motif, la date et l'utilisateur
+    \item Le système crée un log d'action (action: REJECTED, details: motif)
+    \item Le système envoie une notification à l'agence émettrice
+    \item Le système affiche un message de succès
+    \item La vue est rafraîchie
+\end{enumerate}
+
+\subsection{Raffinements Textuels - Scénario Assignment}
+
+\subsubsection{Cas d'utilisation : Assigner une Équipe}
+
+\textbf{Acteur Principal :} Utilisateur Tunisie Sécurité
+
+\textbf{Préconditions :}
+\begin{itemize}[leftmargin=*]
+    \item L'utilisateur est authentifié avec le rôle Tunisie Sécurité
+    \item Une demande existe avec statut VALIDATED
+    \item Des agents de sécurité sont disponibles
+\end{itemize}
+
+\textbf{Scénario nominal :}
+\begin{enumerate}[leftmargin=*]
+    \item L'utilisateur accède à la liste des demandes validées (statut = VALIDATED)
+    \item L'utilisateur sélectionne une demande à traiter
+    \item L'utilisateur clique sur "Assigner une équipe"
+    \item Le système affiche un dialog modal avec un formulaire
+    \item Le formulaire contient :
+    \begin{itemize}
+        \item Dropdown "Chauffeur" avec liste des chauffeurs disponibles
+        \item Dropdown "Garde" avec liste des gardes disponibles
+        \item Champ "Notes" optionnel
+    \end{itemize}
+    \item L'utilisateur sélectionne un chauffeur dans la liste
+    \item L'utilisateur sélectionne un garde dans la liste (différent du chauffeur)
+    \item L'utilisateur ajoute des notes si nécessaire
+    \item L'utilisateur clique sur "Assigner"
+    \item Le système valide que chauffeur ≠ garde
+    \item Le système vérifie la disponibilité des deux agents
+    \item Le système met à jour le statut → ASSIGNED
+    \item Le système enregistre les IDs des agents, la date et l'utilisateur
+    \item Le système crée un log d'action avec détails de l'équipe
+    \item Le système envoie des notifications (Agence + Caisse Centrale)
+    \item Le système affiche un message de succès
+    \item La vue est rafraîchie
+\end{enumerate}
+
+\textbf{Postconditions :}
+\begin{itemize}[leftmargin=*]
+    \item La demande passe au statut ASSIGNED
+    \item Une équipe est assignée (chauffeur + garde identifiés)
+    \item La demande est prête pour dispatch
+\end{itemize}
+
+\subsection{Diagramme de Classes - Entités Validation/Assignment}
+
+La figure \ref{fig:class-sprint3} présente le modèle de classes étendu avec les entités d'audit.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{class-sprint3.png}
+    \caption{Diagramme de classes - Sprint 3}
+    \label{fig:class-sprint3}
+\end{figure}
+
+Les nouvelles entités et attributs :
+
+\begin{description}[leftmargin=*]
+    \item[Request (étendu)] : 
+    \begin{itemize}
+        \item validatedAt, validatedBy (références User)
+        \item rejectionReason, rejectedAt, rejectedBy
+        \item assignedDriverId, assignedGuardId, assignedAt
+    \end{itemize}
+    
+    \item[SecurityOfficer] : Représente un agent de sécurité
+    \begin{itemize}
+        \item cin, firstName, lastName, email, phone
+        \item role (DRIVER | GUARD)
+        \item availability (boolean)
+    \end{itemize}
+    
+    \item[ActionLog] : Enregistre chaque action sur une demande
+    \begin{itemize}
+        \item requestId, action, actorId, details, timestamp
+    \end{itemize}
+\end{description}
+
+Le modèle Prisma étendu :
+
+\begin{lstlisting}[language=SQL]
+model Request {
+  // ... champs existants
+  
+  validatedAt     DateTime?
+  validatedBy     User?     @relation("ValidatedBy", fields: [validatedById], references: [id])
+  validatedById   Int?
+  
+  rejectionReason String?
+  rejectedAt      DateTime?
+  rejectedBy      User?     @relation("RejectedBy", fields: [rejectedById], references: [id])
+  rejectedById    Int?
+  
+  assignedDriver   SecurityOfficer? @relation("Driver", fields: [assignedDriverId], references: [id])
+  assignedDriverId Int?
+  assignedGuard    SecurityOfficer? @relation("Guard", fields: [assignedGuardId], references: [id])
+  assignedGuardId  Int?
+  assignedAt       DateTime?
+  
+  actionLogs ActionLog[]
+}
+
+model SecurityOfficer {
+  id           Int     @id @default(autoincrement())
+  cin          String  @unique
+  firstName    String
+  lastName     String
+  email        String  @unique
+  phone        String
+  role         String  // "DRIVER" | "GUARD"
+  availability Boolean @default(true)
+  
+  driverAssignments Request[] @relation("Driver")
+  guardAssignments  Request[] @relation("Guard")
+  
+  @@index([role, availability])
+}
+
+model ActionLog {
+  id        Int      @id @default(autoincrement())
+  request   Request  @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  requestId Int
+  action    String   // "VALIDATED", "REJECTED", "ASSIGNED", etc.
+  actor     User     @relation(fields: [actorId], references: [id])
+  actorId   Int
+  details   String?  // JSON string with additional info
+  timestamp DateTime @default(now())
+  
+  @@index([requestId])
+  @@index([timestamp])
+}
+\end{lstlisting}
+
+\subsection{Diagramme de Séquence - Validation}
+
+La figure \ref{fig:sequence-validate} illustre le processus de validation d'une demande.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{sequence-validate.png}
+    \caption{Diagramme de séquence - Validation de demande}
+    \label{fig:sequence-validate}
+\end{figure}
+
+Le processus détaillé :
+
+\begin{enumerate}[leftmargin=*]
+    \item L'utilisateur Caisse Centrale clique sur "Valider"
+    \item Le frontend affiche un dialog de confirmation
+    \item L'utilisateur confirme
+    \item Requête POST envoyée à \texttt{/api/requests/[id]/validate}
+    \item L'API vérifie l'authentification et le rôle (CaisseCentrale)
+    \item L'API vérifie que le statut actuel = SUBMITTED
+    \item L'API démarre une transaction Prisma
+    \item L'API met à jour la demande : status=VALIDATED, validatedBy, validatedAt
+    \item L'API crée un ActionLog
+    \item L'API commit la transaction
+    \item L'API déclenche une notification (queue ou email)
+    \item L'API retourne la demande mise à jour
+    \item Le frontend affiche un toast de succès
+    \item Le frontend met à jour la vue locale (optimistic update)
+\end{enumerate}
+
+\subsection{Diagramme de Séquence - Assignment Équipe}
+
+La figure \ref{fig:sequence-assign} montre le processus d'assignment d'une équipe.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{sequence-assign.png}
+    \caption{Diagramme de séquence - Assignment d'équipe}
+    \label{fig:sequence-assign}
+\end{figure}
+
+Les étapes détaillées :
+
+\begin{enumerate}[leftmargin=*]
+    \item Tunisie Sécurité remplit le formulaire (driverId, guardId, notes)
+    \item Le frontend valide : driverId ≠ guardId
+    \item Requête POST à \texttt{/api/requests/[id]/assign-team}
+    \item L'API vérifie l'authentification et le rôle
+    \item L'API vérifie statut = VALIDATED
+    \item L'API vérifie l'existence et la disponibilité du chauffeur
+    \item L'API vérifie l'existence et la disponibilité du garde
+    \item L'API démarre une transaction
+    \item L'API met à jour la demande avec assignedDriverId, assignedGuardId, status=ASSIGNED
+    \item L'API crée un ActionLog avec détails de l'équipe
+    \item L'API commit la transaction
+    \item L'API déclenche des notifications multiples
+    \item L'API retourne la demande
+    \item Le frontend affiche succès
+\end{enumerate}
+
+\subsection{Diagramme d'Activités - Validation Workflow}
+
+La figure \ref{fig:activity-validation} présente le flux décisionnel de validation.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{activity-validation.png}
+    \caption{Diagramme d'activités - Workflow de validation}
+    \label{fig:activity-validation}
+\end{figure}
+
+Le flux inclut :
+
+\begin{itemize}[leftmargin=*]
+    \item Point de décision : La demande est-elle acceptable ?
+    \item Si OUI : Validation → statut VALIDATED → notifier Tunisie Sécurité
+    \item Si NON : Demander motif → Rejet → statut REJECTED → notifier Agence
+    \item Chaque chemin enregistre un log d'action
+\end{itemize}
+
+\section{Conception Détaillée}
+
+\subsection{Architecture Composants Frontend}
+
+Structure des composants :
+
+\begin{verbatim}
+components/
+├── validate-dialog.tsx        # Dialog validation simple
+├── reject-dialog.tsx          # Dialog rejet avec motif
+├── assign-team-dialog.tsx     # Dialog assignment équipe
+├── team-selector.tsx          # Sélecteur chauffeur/garde
+└── action-timeline.tsx        # Timeline des actions
+
+app/requests/[id]/
+└── page.tsx                   # Vue détails avec actions conditionnelles
+\end{verbatim}
+
+\subsection{Routes API}
+
+\begin{description}[leftmargin=*]
+    \item[\texttt{POST /api/requests/[id]/validate}] : Validation de demande
+    \begin{itemize}
+        \item Authorization: Rôle CaisseCentrale uniquement
+        \item Body: \texttt{\{\}} (pas de données supplémentaires)
+        \item Retourne: Request avec status=VALIDATED
+    \end{itemize}
+    
+    \item[\texttt{POST /api/requests/[id]/reject}] : Rejet de demande
+    \begin{itemize}
+        \item Authorization: Rôle CaisseCentrale uniquement
+        \item Body: \texttt{\{ rejectionReason: string \}}
+        \item Validation: rejectionReason min 10 caractères
+        \item Retourne: Request avec status=REJECTED
+    \end{itemize}
+    
+    \item[\texttt{POST /api/requests/[id]/assign-team}] : Assignment équipe
+    \begin{itemize}
+        \item Authorization: Rôle TunisieSécurité uniquement
+        \item Body: \texttt{\{ driverId: number, guardId: number, notes?: string \}}
+        \item Validation: driverId ≠ guardId, disponibilité des deux
+        \item Retourne: Request avec status=ASSIGNED
+    \end{itemize}
+    
+    \item[\texttt{GET /api/requests/[id]/history}] : Historique des actions
+    \begin{itemize}
+        \item Retourne: ActionLog[] ordonnés par timestamp DESC
+    \end{itemize}
+    
+    \item[\texttt{GET /api/security-officers}] : Liste des agents
+    \begin{itemize}
+        \item Query params: role (DRIVER|GUARD), available (true|false)
+        \item Retourne: SecurityOfficer[]
+    \end{itemize}
+\end{description}
+
+\subsection{Middleware - Vérification Permissions}
+
+Protection des endpoints par rôle :
+
+\begin{lstlisting}[language=JavaScript]
+// lib/auth-middleware.ts
+export function requireRole(allowedRoles: string[]) {
+  return async (req: Request) => {
+    const session = await getServerSession();
+    
+    if (!session) {
+      return Response.json(
+        { error: 'Non authentifie' },
+        { status: 401 }
+      );
+    }
+    
+    if (!allowedRoles.includes(session.user.role)) {
+      return Response.json(
+        { error: 'Permission refusee' },
+        { status: 403 }
+      );
+    }
+    
+    return null; // Permission OK
+  };
+}
+
+// Usage dans API route
+export async function POST(request: Request, { params }) {
+  const authError = await requireRole(['CAISSE_CENTRALE'])(request);
+  if (authError) return authError;
+  
+  // ... logique de validation
+}
+\end{lstlisting}
+
+\section{Réalisation - Implémentation}
+
+\subsection{Dialog Validation}
+
+Composant simple de confirmation :
+
+\begin{itemize}[leftmargin=*]
+    \item Header : "Valider la demande \#REQ-2024-001"
+    \item Body : Résumé (montant, agence, type)
+    \item Question : "Confirmez-vous la validation de cette demande ?"
+    \item Actions : "Valider" (vert), "Annuler" (gris)
+    \item Loader pendant l'appel API
+    \item Toast de succès après validation
+\end{itemize}
+
+\subsection{Dialog Rejet}
+
+Composant avec formulaire :
+
+\begin{itemize}[leftmargin=*]
+    \item Header : "Rejeter la demande"
+    \item Body : Résumé de la demande
+    \item Form :
+    \begin{itemize}
+        \item Label : "Motif du rejet *"
+        \item Textarea (min 10 chars, max 500)
+        \item Helper text : "Veuillez expliquer la raison du rejet"
+        \item Validation en temps réel (compte de caractères)
+    \end{itemize}
+    \item Actions : "Rejeter" (rouge, disabled si motif invalide), "Annuler"
+    \item Toast après succès avec redirection
+\end{itemize}
+
+\subsection{Dialog Assignment Équipe}
+
+Composant complexe avec sélecteurs :
+
+\begin{itemize}[leftmargin=*]
+    \item Header : "Assigner une équipe"
+    \item Résumé demande (numéro, agence, montant)
+    \item Form :
+    \begin{itemize}
+        \item Select "Chauffeur" :
+        \begin{itemize}
+            \item Options : CIN - Nom Prénom
+            \item Filtrage par disponibilité (disponibles en premier)
+            \item Recherche textuelle
+        \end{itemize}
+        \item Select "Garde" :
+        \begin{itemize}
+            \item Options : CIN - Nom Prénom
+            \item Exclut le chauffeur sélectionné
+            \item Filtrage disponibilité
+        \end{itemize}
+        \item Textarea "Notes" (optionnel)
+    \end{itemize}
+    \item Validation :
+    \begin{itemize}
+        \item Les deux sélections obligatoires
+        \item Chauffeur ≠ Garde
+        \item Message d'erreur si même personne
+    \end{itemize}
+    \item Actions : "Assigner" (disabled si invalide), "Annuler"
+\end{itemize}
+
+\subsection{Component Timeline Actions}
+
+Affichage chronologique des événements :
+
+\begin{itemize}[leftmargin=*]
+    \item Structure verticale avec ligne de connexion
+    \item Pour chaque action :
+    \begin{itemize}
+        \item Icône (✓ validation, × rejet, 👤 assignment, 🚚 dispatch, ✅ réception)
+        \item Date et heure formatées
+        \item Type d'action (badge coloré)
+        \item Acteur : "Par Nom Prénom (Rôle)"
+        \item Détails supplémentaires :
+        \begin{itemize}
+            \item Si rejet : affichage du motif
+            \item Si assignment : affichage des noms chauffeur/garde
+            \item Si non-conformité : raison
+        \end{itemize}
+    \end{itemize}
+    \item Animation au chargement (fade-in séquentiel)
+\end{itemize}
+
+\subsection{Affichage Conditionnel des Actions}
+
+Dans la vue détails, les actions disponibles dépendent du statut et du rôle :
+
+\begin{lstlisting}[language=JavaScript]
+// Logique d'affichage des boutons
+const canValidate = 
+  userRole === 'CAISSE_CENTRALE' && 
+  request.status === 'SUBMITTED';
+
+const canReject = 
+  userRole === 'CAISSE_CENTRALE' && 
+  request.status === 'SUBMITTED';
+
+const canAssign = 
+  userRole === 'TUNISIE_SECURITE' && 
+  request.status === 'VALIDATED';
+
+return (
+  <div className="actions">
+    {canValidate && <ValidateButton />}
+    {canReject && <RejectButton />}
+    {canAssign && <AssignTeamButton />}
+  </div>
+);
+\end{lstlisting}
+
+\section{Tests et Validation}
+
+\subsection{Tests Fonctionnels}
+
+\subsubsection{Validation}
+
+\begin{itemize}[leftmargin=*]
+    \item [\checkmark] Validation change statut SUBMITTED → VALIDATED
+    \item [\checkmark] Utilisateur et date enregistrés correctement
+    \item [\checkmark] ActionLog créé avec détails
+    \item [\checkmark] Seul CaisseCentrale peut valider
+    \item [\checkmark] Impossible de valider deux fois
+\end{itemize}
+
+\subsubsection{Rejet}
+
+\begin{itemize}[leftmargin=*]
+    \item [\checkmark] Rejet avec motif fonctionne
+    \item [\checkmark] Motif obligatoire (erreur si vide)
+    \item [\checkmark] Motif stocké correctement
+    \item [\checkmark] Notification envoyée à agence
+    \item [\checkmark] Statut passe à REJECTED
+\end{itemize}
+
+\subsubsection{Assignment}
+
+\begin{itemize}[leftmargin=*]
+    \item [\checkmark] Assignment avec chauffeur et garde différents réussit
+    \item [\checkmark] Erreur si même personne pour les deux rôles
+    \item [\checkmark] Erreur si agent indisponible
+    \item [\checkmark] Statut passe à ASSIGNED
+    \item [\checkmark] Seul TunisieSécurité peut assigner
+\end{itemize}
+
+\subsubsection{Traçabilité}
+
+\begin{itemize}[leftmargin=*]
+    \item [\checkmark] Chaque action crée un log
+    \item [\checkmark] Timeline affiche tous les logs ordonnés
+    \item [\checkmark] Détails spécifiques présents (motif, équipe)
+    \item [\checkmark] Timestamp précis enregistré
+\end{itemize}
+
+\subsection{Tests de Sécurité}
+
+\begin{itemize}[leftmargin=*]
+    \item [\checkmark] Agence ne peut pas valider
+    \item [\checkmark] Agence ne peut pas assigner équipe
+    \item [\checkmark] CaisseCentrale ne peut pas assigner
+    \item [\checkmark] TunisieSécurité ne peut pas valider/rejeter
+    \item [\checkmark] Requêtes non authentifiées refusées (401)
+    \item [\checkmark] Requêtes sans permission refusées (403)
+\end{itemize}
+
+\section{Revue de Sprint}
+
+\subsection{Démonstration}
+
+Démonstration complète du workflow :
+
+\begin{enumerate}[leftmargin=*]
+    \item Connexion en tant que Caisse Centrale
+    \item Consultation liste demandes SUBMITTED
+    \item Examen détails d'une demande
+    \item Validation de la demande
+    \item Vérification du changement de statut et log
+    \item Déconnexion et reconnexion en Tunisie Sécurité
+    \item Consultation demandes VALIDATED
+    \item Assignment d'une équipe (sélection chauffeur + garde)
+    \item Vérification statut ASSIGNED et timeline complète
+    \item Test de rejet : création demande, tentative rejet sans motif (erreur), rejet avec motif (succès)
+\end{enumerate}
+
+\subsection{Validation Product Owner}
+
+Points validés :
+
+\begin{itemize}[leftmargin=*]
+    \item Workflow clair et intuitif
+    \item Sécurité des permissions robuste
+    \item Traçabilité complète (audit trail)
+    \item Ergonomie des dialogs (simples et efficaces)
+    \item Performance (actions instantanées)
+\end{itemize}
+
+\subsection{Feedback}
+
+Suggestions :
+
+\begin{itemize}[leftmargin=*]
+    \item Ajouter filtres sur disponibilité agents dans liste [\checkmark\ Implémenté]
+    \item Permettre modification de l'équipe si encore en ASSIGNED [\textit{Backlog}]
+    \item Afficher statistiques de validation (taux, délai moyen) [\textit{Sprint 4}]
+\end{itemize}
+
+\subsection{Métriques du Sprint}
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Durée} : 3 semaines
+    \item \textbf{User Stories complétées} : 6/6 (100\%)
+    \item \textbf{Points de complexité} : 34/34
+    \item \textbf{Bugs identifiés} : 4 (tous résolus)
+    \item \textbf{Couverture permissions} : 100\% (tous rôles testés)
+\end{itemize}
+
+\section{Conclusion du Chapitre}
+
+Le Sprint 3 a permis d'implémenter le workflow critique de validation et d'assignment. Les mécanismes d'approbation multiniveaux garantissent que seules les demandes légitimes sont traitées, tandis que le système d'assignment optimise l'allocation des ressources logistiques.
+
+La traçabilité complète via les ActionLogs constitue un atout majeur pour l'audit et la conformité réglementaire. Chaque décision est documentée avec son contexte, son acteur et son horodatage, permettant une reconstitution fidèle de l'historique.
+
+Le système est maintenant prêt pour les étapes finales : le dispatch des fonds par Tunisie Sécurité et leur réception par les agences, qui seront développés dans le Sprint 4 avec le module analytics.
+
+\newpage

@@ -1,0 +1,92 @@
+\chapter*{Introduction Générale}
+\addcontentsline{toc}{chapter}{Introduction Générale}
+
+\section*{Contexte}
+
+La transformation digitale représente aujourd'hui un enjeu stratégique majeur pour le secteur bancaire tunisien. Dans un environnement économique en constante évolution, les établissements bancaires sont contraints d'optimiser leurs processus opérationnels pour améliorer leur efficacité, réduire les risques et offrir une meilleure qualité de service.
+
+Amen Bank, l'une des principales banques tunisiennes avec un réseau étendu d'agences à travers le pays, fait face à des défis importants dans la gestion quotidienne des mouvements de fonds entre ses différentes entités. Les opérations de provisionnement (transfert de fonds des agences vers la Caisse Centrale) et de versement (transfert de fonds de la Caisse Centrale vers les agences) constituent des activités critiques qui nécessitent une coordination rigoureuse entre plusieurs départements : les agences, la Direction de la Caisse Centrale et la Direction de la Sécurité (Tunisie Sécurité).
+
+\section*{Problématique}
+
+Actuellement, la gestion de ces mouvements de fonds repose largement sur des processus manuels et des documents papier. Cette approche traditionnelle présente plusieurs limitations significatives :
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Risques opérationnels élevés} : Les processus manuels sont sujets aux erreurs humaines, aux pertes de documents et aux incohérences dans les informations.
+    
+    \item \textbf{Délais prolongés} : Le circuit de validation et d'approbation multiniveaux nécessite des échanges multiples de documents physiques, entraînant des retards considérables dans le traitement des demandes.
+    
+    \item \textbf{Traçabilité limitée} : L'absence de système centralisé rend difficile le suivi en temps réel des demandes et la constitution d'un historique complet des opérations.
+    
+    \item \textbf{Difficulté d'audit} : La reconstruction a posteriori du parcours d'une demande et l'identification des responsabilités sont complexes sans un système de logs automatisé.
+    
+    \item \textbf{Absence d'indicateurs de performance} : L'impossibilité d'extraire des statistiques et des KPIs limite la capacité de la direction à prendre des décisions éclairées et à optimiser les processus.
+\end{itemize}
+
+Ces problèmes s'amplifient avec l'augmentation du volume des transactions et la croissance du réseau d'agences, rendant impératif le développement d'une solution digitale adaptée.
+
+\section*{Objectifs du Projet}
+
+Dans ce contexte, l'objectif principal de ce projet de fin d'études est de concevoir et développer un \textbf{Système de Gestion des Fonds Bancaires} moderne et sécurisé qui répond aux besoins d'Amen Bank. Les objectifs spécifiques sont les suivants :
+
+\begin{enumerate}[leftmargin=*]
+    \item \textbf{Automatiser le cycle complet de traitement} : Depuis la soumission d'une demande par une agence jusqu'à la confirmation de réception des fonds, en passant par toutes les étapes intermédiaires de validation, d'assignment et de dispatch.
+    
+    \item \textbf{Mettre en place un workflow sécurisé} : Implémenter un système de contrôle d'accès basé sur les rôles (RBAC) garantissant que chaque acteur n'a accès qu'aux fonctionnalités pertinentes pour son rôle.
+    
+    \item \textbf{Assurer la traçabilité complète} : Enregistrer automatiquement toutes les actions effectuées sur chaque demande, avec identification de l'acteur et horodatage précis.
+    
+    \item \textbf{Faciliter la prise de décision} : Fournir aux administrateurs des tableaux de bord analytiques avec des indicateurs de performance, des tendances et des visualisations graphiques.
+    
+    \item \textbf{Améliorer l'efficacité opérationnelle} : Réduire les délais de traitement, minimiser les erreurs et optimiser l'allocation des ressources logistiques.
+\end{enumerate}
+
+\section*{Solution Proposée}
+
+Pour atteindre ces objectifs, nous proposons le développement d'une application web full-stack moderne basée sur les technologies suivantes :
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Next.js 15} : Framework React pour le développement full-stack avec Server-Side Rendering
+    \item \textbf{PostgreSQL} : Système de gestion de base de données relationnelle robuste
+    \item \textbf{Prisma ORM} : Couche d'abstraction pour l'accès aux données avec type-safety
+    \item \textbf{NextAuth.js} : Solution d'authentification sécurisée avec JWT
+    \item \textbf{TypeScript} : Langage typé pour une meilleure maintenabilité
+    \item \textbf{Tailwind CSS} : Framework CSS pour une interface moderne et responsive
+\end{itemize}
+
+L'application implémente un workflow complet avec quatre rôles principaux : Administrateur, Agence, Caisse Centrale et Tunisie Sécurité. Chaque rôle dispose d'interfaces et de permissions spécifiques, permettant une séparation claire des responsabilités.
+
+\section*{Méthodologie de Travail}
+
+Le développement du projet suit la méthodologie \textbf{Agile/Scrum}, avec une organisation en quatre sprints de deux à trois semaines chacun :
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Sprint 1} : Architecture du système et module d'authentification
+    \item \textbf{Sprint 2} : Module de gestion des demandes (création et consultation)
+    \item \textbf{Sprint 3} : Module de validation et d'assignment des équipes
+    \item \textbf{Sprint 4} : Module de dispatch, réception et analytics
+\end{itemize}
+
+Cette approche itérative permet un développement progressif avec des validations régulières et une adaptation continue aux besoins identifiés.
+
+\section*{Organisation du Rapport}
+
+Ce rapport est structuré en six chapitres principaux :
+
+\begin{description}[leftmargin=*]
+    \item[Chapitre 1 : Cadre Général du Projet] présente l'organisme d'accueil, le cadrage du projet, l'étude de l'existant et la méthodologie de travail adoptée.
+    
+    \item[Chapitre 2 : État de l'Art] expose les concepts métiers bancaires, les technologies utilisées et les choix architecturaux.
+    
+    \item[Chapitre 3 : Sprint 1] détaille la mise en place de l'architecture et du système d'authentification.
+    
+    \item[Chapitre 4 : Sprint 2] présente le développement du module de gestion des demandes.
+    
+    \item[Chapitre 5 : Sprint 3] décrit l'implémentation du workflow de validation et d'assignment.
+    
+    \item[Chapitre 6 : Sprint 4] expose la réalisation des modules de dispatch, réception et analytics.
+\end{description}
+
+Enfin, une conclusion générale synthétise les réalisations, les compétences acquises et les perspectives d'évolution du système.
+
+\newpage

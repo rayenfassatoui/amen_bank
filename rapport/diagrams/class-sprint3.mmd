@@ -1,0 +1,47 @@
+classDiagram
+    class Request {
+        +Int id
+        +String requestNumber
+        +String status
+        +DateTime validatedAt
+        +Int validatedBy
+        +String rejectionReason
+        +DateTime rejectedAt
+        +Int rejectedBy
+        +Int assignedDriverId
+        +Int assignedGuardId
+        +DateTime assignedAt
+    }
+    
+    class SecurityOfficer {
+        +Int id
+        +String cin
+        +String firstName
+        +String lastName
+        +String email
+        +String phone
+        +String role
+        +Boolean availability
+    }
+    
+    class ActionLog {
+        +Int id
+        +Int requestId
+        +String action
+        +Int actorId
+        +String details
+        +DateTime timestamp
+    }
+    
+    class User {
+        +Int id
+        +String email
+        +String firstName
+        +String lastName
+    }
+    
+    Request "n" --> "0..1" SecurityOfficer : assignedDriver
+    Request "n" --> "0..1" SecurityOfficer : assignedGuard
+    Request "1" --> "n" ActionLog : hasMany
+    ActionLog "n" --> "1" User : performedBy
+    Request "n" --> "1" User : validatedBy

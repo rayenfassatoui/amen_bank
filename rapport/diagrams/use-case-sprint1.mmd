@@ -1,0 +1,29 @@
+graph LR
+    Admin((Admin))
+    Agence((Agence))
+    CC((Caisse<br/>Centrale))
+    TS((Tunisie<br/>Sécurité))
+    
+    Auth[Se connecter]
+    CreateUser[Créer utilisateur]
+    ManageUsers[Gérer utilisateurs]
+    Dashboard[Voir dashboard]
+    
+    Admin --> Auth
+    Admin --> CreateUser
+    Admin --> ManageUsers
+    Admin --> Dashboard
+    
+    Agence --> Auth
+    Agence --> Dashboard
+    
+    CC --> Auth
+    CC --> Dashboard
+    
+    TS --> Auth
+    TS --> Dashboard
+    
+    style Admin fill:#f59e0b,stroke:#d97706,color:#000
+    style Agence fill:#8b5cf6,stroke:#7c3aed,color:#fff
+    style CC fill:#10b981,stroke:#059669,color:#fff
+    style TS fill:#ef4444,stroke:#dc2626,color:#fff

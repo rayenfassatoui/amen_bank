@@ -1,0 +1,26 @@
+sequenceDiagram
+    actor TS as Tunisie Sécurité
+    participant UI as Frontend
+    participant API as API Requests
+    participant DB as Base Données
+    participant Notif as Notifications
+    
+    TS->>UI: Clique "Dispatcher"
+    UI->>UI: Dialog confirmation
+    UI->>UI: Affiche équipe + destination
+    TS->>UI: Confirme dispatch
+    UI->>API: POST /api/requests/[id]/dispatch
+    API->>API: Vérifier authz (TS role)
+    API->>DB: Vérifier status = ASSIGNED
+    alt Status valide
+        API->>DB: UPDATE status=DISPATCHED
+        API->>DB: SET dispatchedAt, dispatchedBy
+        API->>DB: INSERT ActionLog
+        DB-->>API: Confirmé
+        API->>Notif: Notifier Agence destinataire
+        API-->>UI: Request dispatchée
+        UI-->>TS: Toast succès
+    else Status invalide
+        API-->>UI: Erreur 400
+        UI-->>TS: Message erreur
+    end
